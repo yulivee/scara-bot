@@ -1,0 +1,41 @@
+Pin	   Color	Arm
+01	   Black	AL SKE
+02	   Red		AL SKE
+03	   Black	AL SKF
+04	   Red		AL SKF
+05         Black	UAJ
+06	   Red		UAJ
+07	   Black	SHOULDER
+08	   Red		SHOULDER
+09 	   Black	UAE
+10	   Red		UAE
+11	   Black	AL SKG
+12	   Red		AL SKG
+13	   Orange	SHOULDER/UAJ/UAE/AL SKG
+14    	   Orange	AL SKF/AL SKE
+15	   Gray	  	SHOULDER/UAJ/UAE/(...)
+16	   Orange	SHOULDER/UAJ/UAE/AL SKG
+17	   Gray		(...)
+18	   Gray		SHOULDER/UAJ
+19	   Yellow	AL SKE
+20 	   White	AL SKE		
+21	   Yellow	AL SKF
+22	   White	AL SKF
+23	   Yellow	UAJ
+24	   White	UAJ
+25	   Yellow	SHOULDER
+26	   White	SHOULDER
+27	   Yellow	UAE
+28	   White	UAE
+29	   Yellow	AL SKG
+30	   White	AL SKG
+31	   Yellow	AUX 9
+32	   White	AUX 10
+33	   Yellow	AUX 7
+34	   White	AUX 8
+35	   Yellow	AUX 5
+36	   White	AUX 6
+37	   Yellow	AUX 3
+38	   White	AUX 4
+39	   Yellow	AUX 1
+40	   White	AUX 2
