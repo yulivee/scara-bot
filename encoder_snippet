@@ -1,0 +1,32 @@
+/*
+ * Simple example of analysis of the 4WD Platform wheel encoder
+ *
+ * Die Dateleitungen (grün) der Encoder gehören in Digital-Pin 2 und 3
+ * Die Richtung ergibt sich aus der Motordrehrichtung
+ *
+ * Version: 0.1 2011.01.05
+ * Copyleft: 2011 Heiner Otterstedt
+ * Weblinks: http://www.hobby-werkstatt-blog.de/
+ * http://www.hobby-werkstatt-blog.de/arduino/294-arduino-wheel-encoders-rotary-encoders.php
+ */
+volatile int cnt0 = 0;
+volatile int cnt1 = 0;
+
+void setup()
+{ attachInterrupt(0, doCount0, CHANGE);
+  attachInterrupt(1, doCount1, CHANGE);
+  Serial.begin(9600);
+}
+
+void loop()
+{ Serial.print(cnt0);
+  Serial.print(" - ");
+  Serial.println(cnt1);
+  delay(1000);
+}
+
+// Dummy interrupt functions
+void doCount0() { cnt0++;  }
+void doCount1() { cnt1++;  }
+
+
