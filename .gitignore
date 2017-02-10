@@ -2,3 +2,7 @@
 .clang_complete
 .gcc-flags.json
 .piolibdeps
+.swp
+.swo
+.bak
+.orig
