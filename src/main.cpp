@@ -11,15 +11,27 @@ int links_uae = 9;
 int rechts_uae = 8;
 int links_shoulder = 10;
 int rechts_shoulder = 11;
+int links_z = 44;
+int rechts_z = 45;
+volatile int cnt0 = 0;
+volatile int cnt1 = 0;
 int monitor = 0;
 
 int tempo = 100;
+
+void doCount0() { 
+	cnt0++;
+	Serial.println(cnt0);
+}
+void doCount1() { cnt1++;  }
 
 void setup()
 {
     Serial.begin(9600);
     //pinMode(enable1, OUTPUT);
     //digitalWrite(enable1, HIGH);
+    attachInterrupt(4, doCount0, CHANGE); // Interrupt 4 liegt auf Pin 19
+    attachInterrupt(5, doCount1, CHANGE); // Interrupt 5 liegt auf Pin 18
     pinMode(links_shoulder, OUTPUT);
     pinMode(rechts_shoulder, OUTPUT);
     pinMode(links_uae, OUTPUT);
@@ -32,6 +44,8 @@ void setup()
     pinMode(rechts_skf, OUTPUT);
     pinMode(links_ske, OUTPUT);
     pinMode(rechts_ske, OUTPUT);
+    pinMode(links_z, OUTPUT);
+    pinMode(rechts_z, OUTPUT);
 
     analogWrite(links_shoulder, 0);
     analogWrite(rechts_shoulder, 0);
@@ -45,7 +59,10 @@ void setup()
     analogWrite(rechts_skf, 0);
     analogWrite(links_ske, 0);
     analogWrite(rechts_ske, 0);
+    analogWrite(links_z, 0);
+    analogWrite(rechts_z, 0);
 }
+
 void stop_motors () {
     analogWrite(links_shoulder, 0);
     analogWrite(rechts_shoulder, 0);
@@ -59,13 +76,39 @@ void stop_motors () {
     analogWrite(rechts_skf, 0);
     analogWrite(links_ske, 0);
     analogWrite(rechts_ske, 0);
+    analogWrite(links_z, 0);
+    analogWrite(rechts_z, 0);
+}
+
+void move_z_right () {
+    analogWrite(links_z, tempo);
+    analogWrite(rechts_z, 0 );
+    delay(1000);
+    stop_motors();
+}
+
+void move_z_left () {
+    analogWrite(links_z, 0);
+    analogWrite(rechts_z, tempo );
+    delay(1000);
+    stop_motors();
 }
 
 void move_shoulder_right () {
-    analogWrite(links_shoulder, tempo);
-    analogWrite(rechts_shoulder, 0 );
-    delay(1000);
+    /* 
+    Serial.println(cnt0);
+    int current_enc = cnt0;
+    current_enc += 80;
+    
+    while ( current_enc > cnt0 ) {
+	    analogWrite(links_shoulder, tempo);
+    }
+	    analogWrite(rechts_shoulder, 0 );
+    Serial.println(cnt0);
+
     stop_motors();
+
+    */
 }
 
 void move_shoulder_left () {
@@ -207,8 +250,16 @@ void loop()
 	    move_skg_left();
             monitor = 49;
 	}
+	if ( monitor == 116 ) {
+		move_z_left();
+		monitor = 49;
+	}
+	if ( monitor == 122 ) {
+		move_z_right();
+		monitor = 49;
+	}
         Serial.println( monitor );
     }
-    delay(100);
+    delay(1000);
 }
 
