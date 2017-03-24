@@ -11,18 +11,17 @@ int links_uae = 9;
 int rechts_uae = 8;
 int links_shoulder = 10;
 int rechts_shoulder = 11;
+int shoulder_enable = 14;
 int links_z = 44;
 int rechts_z = 45;
 volatile int cnt0 = 0;
 volatile int cnt1 = 0;
 int monitor = 0;
 
-int tempo = 100;
+int tempo = 30;
+int clicks = 100;
 
-void doCount0() { 
-	cnt0++;
-	Serial.println(cnt0);
-}
+void doCount0() { cnt0++; }
 void doCount1() { cnt1++;  }
 
 void setup()
@@ -30,8 +29,9 @@ void setup()
     Serial.begin(9600);
     //pinMode(enable1, OUTPUT);
     //digitalWrite(enable1, HIGH);
-    attachInterrupt(4, doCount0, CHANGE); // Interrupt 4 liegt auf Pin 19
+    attachInterrupt(digitalPinToInterrupt(20), doCount0, CHANGE); // Interrupt 4 liegt auf Pin 19
     attachInterrupt(5, doCount1, CHANGE); // Interrupt 5 liegt auf Pin 18
+    pinMode(shoulder_enable, OUTPUT);
     pinMode(links_shoulder, OUTPUT);
     pinMode(rechts_shoulder, OUTPUT);
     pinMode(links_uae, OUTPUT);
@@ -95,20 +95,34 @@ void move_z_left () {
 }
 
 void move_shoulder_right () {
-    /* 
+
+    digitalWrite(shoulder_enable, 1);
+
     Serial.println(cnt0);
     int current_enc = cnt0;
-    current_enc += 80;
+    int start_value = cnt0;
+    current_enc += clicks;
+	Serial.print(">> ");
+	Serial.print(cnt0);
+	Serial.println(" <<");
     
     while ( current_enc > cnt0 ) {
-	    analogWrite(links_shoulder, tempo);
+	analogWrite(rechts_shoulder, tempo);
+	Serial.print("-- ");
+	Serial.print(cnt0);
+	Serial.println(" --");
     }
-	    analogWrite(rechts_shoulder, 0 );
-    Serial.println(cnt0);
+	digitalWrite(links_shoulder, 0 );
+	digitalWrite(rechts_shoulder, 0 );
+	digitalWrite(shoulder_enable, 0);
+
+	Serial.print(">> ");
+	Serial.print(cnt0);
+	Serial.print(" >> ");
+	Serial.print(cnt0 - start_value);
+	Serial.println(" <<");
 
     stop_motors();
-
-    */
 }
 
 void move_shoulder_left () {
@@ -257,6 +271,26 @@ void loop()
 	if ( monitor == 122 ) {
 		move_z_right();
 		monitor = 49;
+	}
+	if ( monitor == 111 ) {
+		tempo-=5;
+		Serial.print ("Neues Tempo: ");
+		Serial.println( tempo );
+	}
+	if ( monitor == 112 ) {
+		tempo+=5;
+		Serial.print ("Neues Tempo: ");
+		Serial.println( tempo );
+	}
+	if ( monitor == 107 ) {
+		clicks-=5;
+		Serial.print ("Anzahl Schritte: ");
+		Serial.println( clicks );
+	}
+	if ( monitor == 108 ) {
+		clicks+=5;
+		Serial.print ("Anzahl Schritte: ");
+		Serial.println( clicks );
 	}
         Serial.println( monitor );
     }

@@ -26,6 +26,13 @@ C - Zange zu
 V - Zange auf
 T - Z hoch
 Z - Z runter
+O - tempo-5
+P - tempo+5
+K - 107 - clicks-10 
+L - 108 - clicks+10
+
+Arduino Interrupt-Pins:
+2, 3, 18, 19, 20, 21
 
 Pin	   Color	Arm
 01	   Black	AL SKE
