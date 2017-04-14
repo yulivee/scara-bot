@@ -1,103 +1,74 @@
 #include <Arduino.h>
-int links_ske = 5;
-int rechts_ske = 4;
-int links_skf = 2;
-int rechts_skf = 3;
-int links_skg = 12;
-int rechts_skg = 13;
-int links_uaj = 7;
-int rechts_uaj = 6 ;
-int links_uae = 9;
-int rechts_uae = 8;
-int links_shoulder = 10;
-int rechts_shoulder = 11;
-int shoulder_enable = 14;
-int links_z = 44;
-int rechts_z = 45;
+#include <pins.h>
 volatile int cnt0 = 0;
 volatile int cnt1 = 0;
 int monitor = 0;
 
 int tempo = 30;
-int clicks = 100;
+int clicks = 120;
 
 void doCount0() { cnt0++; }
-void doCount1() { cnt1++;  }
+void doCount1() { cnt1++; }
 
 void setup()
 {
     Serial.begin(9600);
-    //pinMode(enable1, OUTPUT);
-    //digitalWrite(enable1, HIGH);
-    attachInterrupt(digitalPinToInterrupt(20), doCount0, CHANGE); // Interrupt 4 liegt auf Pin 19
+    attachInterrupt(digitalPinToInterrupt(19), doCount0, CHANGE); // Interrupt 4 liegt auf Pin 19
     attachInterrupt(5, doCount1, CHANGE); // Interrupt 5 liegt auf Pin 18
-    pinMode(shoulder_enable, OUTPUT);
-    pinMode(links_shoulder, OUTPUT);
-    pinMode(rechts_shoulder, OUTPUT);
-    pinMode(links_uae, OUTPUT);
-    pinMode(rechts_uae, OUTPUT);
-    pinMode(links_uaj, OUTPUT);
-    pinMode(rechts_uaj, OUTPUT);
-    pinMode(links_skg, OUTPUT);
-    pinMode(rechts_skg, OUTPUT);
-    pinMode(links_skf, OUTPUT);
-    pinMode(rechts_skf, OUTPUT);
-    pinMode(links_ske, OUTPUT);
-    pinMode(rechts_ske, OUTPUT);
-    pinMode(links_z, OUTPUT);
-    pinMode(rechts_z, OUTPUT);
+    pinMode(19, INPUT);
+    pinMode(shoulder.left, OUTPUT);
+    pinMode(shoulder.right, OUTPUT);
+    pinMode(shoulder.enable, OUTPUT);
+    pinMode(uae.left, OUTPUT);
+    pinMode(uae.right, OUTPUT);
+    pinMode(uaj.left, OUTPUT);
+    pinMode(uaj.right, OUTPUT);
+    pinMode(skg.left, OUTPUT);
+    pinMode(skg.right, OUTPUT);
+    pinMode(skf.left, OUTPUT);
+    pinMode(skf.right, OUTPUT);
+    pinMode(ske.left, OUTPUT);
+    pinMode(ske.right, OUTPUT);
+    pinMode(zaxis.left, OUTPUT);
+    pinMode(zaxis.right, OUTPUT);
 
-    analogWrite(links_shoulder, 0);
-    analogWrite(rechts_shoulder, 0);
-    analogWrite(links_uae, 0);
-    analogWrite(rechts_uae, 0);
-    analogWrite(links_uaj, 0);
-    analogWrite(rechts_uaj, 0);
-    analogWrite(links_skg, 0);
-    analogWrite(rechts_skg, 0);
-    analogWrite(links_skf, 0);
-    analogWrite(rechts_skf, 0);
-    analogWrite(links_ske, 0);
-    analogWrite(rechts_ske, 0);
-    analogWrite(links_z, 0);
-    analogWrite(rechts_z, 0);
+    analogWrite(shoulder.left, 0);
+    analogWrite(shoulder.right, 0);
+    analogWrite(uae.left, 0);
+    analogWrite(uae.right, 0);
+    analogWrite(uaj.left, 0);
+    analogWrite(uaj.right, 0);
+    analogWrite(skg.left, 0);
+    analogWrite(skg.right, 0);
+    analogWrite(skf.left, 0);
+    analogWrite(skf.right, 0);
+    analogWrite(ske.left, 0);
+    analogWrite(ske.right, 0);
+    analogWrite(zaxis.left, 0);
+    analogWrite(zaxis.right, 0);
 }
 
 void stop_motors () {
-    analogWrite(links_shoulder, 0);
-    analogWrite(rechts_shoulder, 0);
-    analogWrite(links_uae, 0);
-    analogWrite(rechts_uae, 0);
-    analogWrite(links_uaj, 0);
-    analogWrite(rechts_uaj, 0);
-    analogWrite(links_skg, 0);
-    analogWrite(rechts_skg, 0);
-    analogWrite(links_skf, 0);
-    analogWrite(rechts_skf, 0);
-    analogWrite(links_ske, 0);
-    analogWrite(rechts_ske, 0);
-    analogWrite(links_z, 0);
-    analogWrite(rechts_z, 0);
+    digitalWrite(shoulder.left, 0);
+    digitalWrite(shoulder.right, 0);
+    //analogWrite(shoulder.left, 0);
+    //analogWrite(shoulder.right, 0);
+    analogWrite(uae.left, 0);
+    analogWrite(uae.right, 0);
+    analogWrite(uaj.left, 0);
+    analogWrite(uaj.right, 0);
+    analogWrite(skg.left, 0);
+    analogWrite(skg.right, 0);
+    analogWrite(skf.left, 0);
+    analogWrite(skf.right, 0);
+    analogWrite(ske.left, 0);
+    analogWrite(ske.right, 0);
+    analogWrite(zaxis.left, 0);
+    analogWrite(zaxis.right, 0);
 }
 
-void move_z_right () {
-    analogWrite(links_z, tempo);
-    analogWrite(rechts_z, 0 );
-    delay(1000);
-    stop_motors();
-}
-
-void move_z_left () {
-    analogWrite(links_z, 0);
-    analogWrite(rechts_z, tempo );
-    delay(1000);
-    stop_motors();
-}
-
-void move_shoulder_right () {
-
-    digitalWrite(shoulder_enable, 1);
-
+void move ( struct pins *input, int direction ) {
+	
     Serial.println(cnt0);
     int current_enc = cnt0;
     int start_value = cnt0;
@@ -105,16 +76,20 @@ void move_shoulder_right () {
 	Serial.print(">> ");
 	Serial.print(cnt0);
 	Serial.println(" <<");
-    
+
     while ( current_enc > cnt0 ) {
-	analogWrite(rechts_shoulder, tempo);
+	    if ( direction == RIGHT ) {
+	digitalWrite(input->right, 1);
+	    } else {
+	digitalWrite(input->left, 1);
+		}
 	Serial.print("-- ");
 	Serial.print(cnt0);
 	Serial.println(" --");
     }
-	digitalWrite(links_shoulder, 0 );
-	digitalWrite(rechts_shoulder, 0 );
-	digitalWrite(shoulder_enable, 0);
+	digitalWrite(input->left, 0 );
+	digitalWrite(input->right, 0 );
+	digitalWrite(input->enable, 0);
 
 	Serial.print(">> ");
 	Serial.print(cnt0);
@@ -122,83 +97,6 @@ void move_shoulder_right () {
 	Serial.print(cnt0 - start_value);
 	Serial.println(" <<");
 
-    stop_motors();
-}
-
-void move_shoulder_left () {
-    analogWrite(links_shoulder, 0);
-    analogWrite(rechts_shoulder, tempo );
-    delay(1000);
-    stop_motors();
-}
-
-void move_uae_right () {
-    analogWrite(links_uae,tempo);
-    analogWrite(rechts_uae, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_uae_left () {
-    analogWrite(links_uae, 0);
-    analogWrite(rechts_uae, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_uaj_right () {
-    analogWrite(links_uaj,tempo);
-    analogWrite(rechts_uaj, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_uaj_left () {
-    analogWrite(links_uaj, 0);
-    analogWrite(rechts_uaj, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_ske_right () {
-    analogWrite(links_ske,tempo);
-    analogWrite(rechts_ske, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_ske_left () {
-    analogWrite(links_ske, 0);
-    analogWrite(rechts_ske, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skg_right () {
-    analogWrite(links_skg,tempo);
-    analogWrite(rechts_skg, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skg_left () {
-    analogWrite(links_skg, 0);
-    analogWrite(rechts_skg, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skf_right () {
-    analogWrite(links_skf,tempo);
-    analogWrite(rechts_skf, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skf_left () {
-    analogWrite(links_skf, 0);
-    analogWrite(rechts_skf, tempo);
-    delay(1000);
     stop_motors();
 }
 
@@ -213,64 +111,47 @@ void loop()
         }
 
         if( monitor == 113 ) {
-            move_shoulder_right();
-            monitor = 49;
+	    move(&shoulder,RIGHT);
         }
 
         if( monitor == 119 ) {
-            move_shoulder_left();
-            monitor = 49;
+	    move(&shoulder,LEFT);
         }
         if( monitor == 97 ) {
-            move_uae_left();
-            monitor = 49;
+	    move(&uae,LEFT);
         }
         if ( monitor == 115 ) {
-            move_uae_right();
-            monitor = 49;
-
+	    move(&uae,RIGHT);
         }
         if ( monitor == 121 ) {
-            move_uaj_right();
-            monitor = 49;
-
+	    move(&uaj,RIGHT);
         }
         if ( monitor == 120 ) {
-            move_uaj_left();
-            monitor = 49;
-
+	    move(&uaj,LEFT);
         }
 	if ( monitor == 101 ) {
-	    move_ske_right();
-            monitor = 49;
-	}
+	    move(&ske,RIGHT);
+        }
 	if ( monitor == 114 ) {
-	    move_ske_left();
-            monitor = 49;
+	    move(&ske,LEFT);
 	}
 	if ( monitor == 100 ) {
-	    move_skf_right();
-            monitor = 49;
+	    move(&skf,RIGHT);
 	}
 	if ( monitor == 102 ) {
-	    move_skf_left();
-            monitor = 49;
+	    move(&skf,LEFT);
 	}
 	if ( monitor == 99 ) {
-	    move_skg_right();
-            monitor = 49;
+	    move(&skg,RIGHT);
 	}
 	if ( monitor == 118 ) {
-	    move_skg_left();
-            monitor = 49;
+	    move(&skg,LEFT);
 	}
 	if ( monitor == 116 ) {
-		move_z_left();
-		monitor = 49;
+	    move(&zaxis,LEFT);
 	}
 	if ( monitor == 122 ) {
-		move_z_right();
-		monitor = 49;
+	    move(&zaxis,RIGHT);
 	}
 	if ( monitor == 111 ) {
 		tempo-=5;
