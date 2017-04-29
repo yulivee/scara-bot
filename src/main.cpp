@@ -17,56 +17,20 @@ void doCount1() {
 void setup()
 {
     Serial.begin(9600);
-    attachInterrupt(digitalPinToInterrupt(19), doCount0, CHANGE); // Interrupt 4 liegt auf Pin 19
-    attachInterrupt(5, doCount1, CHANGE); // Interrupt 5 liegt auf Pin 18
-    pinMode(19, INPUT);
-    pinMode(shoulder.left, OUTPUT);
-    pinMode(shoulder.right, OUTPUT);
-    pinMode(shoulder.enable, OUTPUT);
-    pinMode(uae.left, OUTPUT);
-    pinMode(uae.right, OUTPUT);
+    attachInterrupt(digitalPinToInterrupt(uaj.cnt0), doCount0, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(uaj.cnt1), doCount1, CHANGE);
+    pinMode(uaj.cnt0, INPUT);
+    pinMode(uaj.cnt1, INPUT);
     pinMode(uaj.left, OUTPUT);
     pinMode(uaj.right, OUTPUT);
-    pinMode(skg.left, OUTPUT);
-    pinMode(skg.right, OUTPUT);
-    pinMode(skf.left, OUTPUT);
-    pinMode(skf.right, OUTPUT);
-    pinMode(ske.left, OUTPUT);
-    pinMode(ske.right, OUTPUT);
-    pinMode(zaxis.left, OUTPUT);
-    pinMode(zaxis.right, OUTPUT);
 
-    digitalWrite(shoulder.left, 0);
-    digitalWrite(shoulder.right, 0);
-    digitalWrite(uae.left, 0);
-    digitalWrite(uae.right, 0);
     digitalWrite(uaj.left, 0);
     digitalWrite(uaj.right, 0);
-    digitalWrite(skg.left, 0);
-    digitalWrite(skg.right, 0);
-    digitalWrite(skf.left, 0);
-    digitalWrite(skf.right, 0);
-    digitalWrite(ske.left, 0);
-    digitalWrite(ske.right, 0);
-    digitalWrite(zaxis.left, 0);
-    digitalWrite(zaxis.right, 0);
 }
 
 void stop_motors () {
-    digitalWrite(shoulder.left, 0);
-    digitalWrite(shoulder.right, 0);
-    digitalWrite(uae.left, 0);
-    digitalWrite(uae.right, 0);
     digitalWrite(uaj.left, 0);
     digitalWrite(uaj.right, 0);
-    digitalWrite(skg.left, 0);
-    digitalWrite(skg.right, 0);
-    digitalWrite(skf.left, 0);
-    digitalWrite(skf.right, 0);
-    digitalWrite(ske.left, 0);
-    digitalWrite(ske.right, 0);
-    digitalWrite(zaxis.left, 0);
-    digitalWrite(zaxis.right, 0);
 }
 
 void move ( struct pins *input, int direction ) {
@@ -85,9 +49,6 @@ void move ( struct pins *input, int direction ) {
         } else {
             digitalWrite(input->left, 1);
         }
-        //Serial.print("-- ");
-        //Serial.print(cnt0);
-        //Serial.println(" --");
     }
     digitalWrite(input->left, 0 );
     digitalWrite(input->right, 0 );
@@ -111,49 +72,11 @@ void loop()
         if( monitor == 49 ) { // aus
             stop_motors();
         }
-
-        if( monitor == 113 ) {
-            move(&shoulder,RIGHT);
-        }
-
-        if( monitor == 119 ) {
-            move(&shoulder,LEFT);
-        }
-        if( monitor == 97 ) {
-            move(&uae,LEFT);
-        }
-        if ( monitor == 115 ) {
-            move(&uae,RIGHT);
-        }
         if ( monitor == 121 ) {
             move(&uaj,RIGHT);
         }
         if ( monitor == 120 ) {
             move(&uaj,LEFT);
-        }
-        if ( monitor == 101 ) {
-            move(&ske,RIGHT);
-        }
-        if ( monitor == 114 ) {
-            move(&ske,LEFT);
-        }
-        if ( monitor == 100 ) {
-            move(&skf,RIGHT);
-        }
-        if ( monitor == 102 ) {
-            move(&skf,LEFT);
-        }
-        if ( monitor == 99 ) {
-            move(&skg,RIGHT);
-        }
-        if ( monitor == 118 ) {
-            move(&skg,LEFT);
-        }
-        if ( monitor == 116 ) {
-            move(&zaxis,LEFT);
-        }
-        if ( monitor == 122 ) {
-            move(&zaxis,RIGHT);
         }
         if ( monitor == 111 ) {
             tempo-=5;

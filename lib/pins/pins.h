@@ -9,15 +9,9 @@ extern "C" {
 #define RIGHT 1
 #define LEFT 0	
 
-struct pins { int left; int right; int enable; int cnt1; int cnt2; };
+struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 
-struct pins shoulder = { 10, 11, 14, 19, 0 };
-struct pins ske = { 4,5,0 };
-struct pins skg = { 12, 13, 0 };
-struct pins skf = { 2, 3 ,0 };
-struct pins uaj= { 7, 6, 0 };
-struct pins uae = { 9, 8, 0 };
-struct pins zaxis = { 44, 45, 0 };
+struct pins uaj= { 7, 6, 5, 2, 3 };
 
 
 #ifdef __cplusplus
