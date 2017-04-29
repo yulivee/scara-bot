@@ -5,10 +5,14 @@ volatile int cnt1 = 0;
 int monitor = 0;
 
 int tempo = 30;
-int clicks = 120;
+int clicks = 2;
 
-void doCount0() { cnt0++; }
-void doCount1() { cnt1++; }
+void doCount0() {
+    cnt0++;
+}
+void doCount1() {
+    cnt1++;
+}
 
 void setup()
 {
@@ -32,70 +36,68 @@ void setup()
     pinMode(zaxis.left, OUTPUT);
     pinMode(zaxis.right, OUTPUT);
 
-    analogWrite(shoulder.left, 0);
-    analogWrite(shoulder.right, 0);
-    analogWrite(uae.left, 0);
-    analogWrite(uae.right, 0);
-    analogWrite(uaj.left, 0);
-    analogWrite(uaj.right, 0);
-    analogWrite(skg.left, 0);
-    analogWrite(skg.right, 0);
-    analogWrite(skf.left, 0);
-    analogWrite(skf.right, 0);
-    analogWrite(ske.left, 0);
-    analogWrite(ske.right, 0);
-    analogWrite(zaxis.left, 0);
-    analogWrite(zaxis.right, 0);
+    digitalWrite(shoulder.left, 0);
+    digitalWrite(shoulder.right, 0);
+    digitalWrite(uae.left, 0);
+    digitalWrite(uae.right, 0);
+    digitalWrite(uaj.left, 0);
+    digitalWrite(uaj.right, 0);
+    digitalWrite(skg.left, 0);
+    digitalWrite(skg.right, 0);
+    digitalWrite(skf.left, 0);
+    digitalWrite(skf.right, 0);
+    digitalWrite(ske.left, 0);
+    digitalWrite(ske.right, 0);
+    digitalWrite(zaxis.left, 0);
+    digitalWrite(zaxis.right, 0);
 }
 
 void stop_motors () {
     digitalWrite(shoulder.left, 0);
     digitalWrite(shoulder.right, 0);
-    //analogWrite(shoulder.left, 0);
-    //analogWrite(shoulder.right, 0);
-    analogWrite(uae.left, 0);
-    analogWrite(uae.right, 0);
-    analogWrite(uaj.left, 0);
-    analogWrite(uaj.right, 0);
-    analogWrite(skg.left, 0);
-    analogWrite(skg.right, 0);
-    analogWrite(skf.left, 0);
-    analogWrite(skf.right, 0);
-    analogWrite(ske.left, 0);
-    analogWrite(ske.right, 0);
-    analogWrite(zaxis.left, 0);
-    analogWrite(zaxis.right, 0);
+    digitalWrite(uae.left, 0);
+    digitalWrite(uae.right, 0);
+    digitalWrite(uaj.left, 0);
+    digitalWrite(uaj.right, 0);
+    digitalWrite(skg.left, 0);
+    digitalWrite(skg.right, 0);
+    digitalWrite(skf.left, 0);
+    digitalWrite(skf.right, 0);
+    digitalWrite(ske.left, 0);
+    digitalWrite(ske.right, 0);
+    digitalWrite(zaxis.left, 0);
+    digitalWrite(zaxis.right, 0);
 }
 
 void move ( struct pins *input, int direction ) {
-	
+
     Serial.println(cnt0);
     int current_enc = cnt0;
     int start_value = cnt0;
     current_enc += clicks;
-	Serial.print(">> ");
-	Serial.print(cnt0);
-	Serial.println(" <<");
+    Serial.print(">> ");
+    Serial.print(cnt0);
+    Serial.println(" <<");
 
     while ( current_enc > cnt0 ) {
-	    if ( direction == RIGHT ) {
-	digitalWrite(input->right, 1);
-	    } else {
-	digitalWrite(input->left, 1);
-		}
-	Serial.print("-- ");
-	Serial.print(cnt0);
-	Serial.println(" --");
+        if ( direction == RIGHT ) {
+            digitalWrite(input->right, 1);
+        } else {
+            digitalWrite(input->left, 1);
+        }
+        //Serial.print("-- ");
+        //Serial.print(cnt0);
+        //Serial.println(" --");
     }
-	digitalWrite(input->left, 0 );
-	digitalWrite(input->right, 0 );
-	digitalWrite(input->enable, 0);
+    digitalWrite(input->left, 0 );
+    digitalWrite(input->right, 0 );
+    digitalWrite(input->enable, 0);
 
-	Serial.print(">> ");
-	Serial.print(cnt0);
-	Serial.print(" >> ");
-	Serial.print(cnt0 - start_value);
-	Serial.println(" <<");
+    Serial.print(">> ");
+    Serial.print(cnt0);
+    Serial.print(" >> ");
+    Serial.print(cnt0 - start_value);
+    Serial.println(" <<");
 
     stop_motors();
 }
@@ -111,68 +113,68 @@ void loop()
         }
 
         if( monitor == 113 ) {
-	    move(&shoulder,RIGHT);
+            move(&shoulder,RIGHT);
         }
 
         if( monitor == 119 ) {
-	    move(&shoulder,LEFT);
+            move(&shoulder,LEFT);
         }
         if( monitor == 97 ) {
-	    move(&uae,LEFT);
+            move(&uae,LEFT);
         }
         if ( monitor == 115 ) {
-	    move(&uae,RIGHT);
+            move(&uae,RIGHT);
         }
         if ( monitor == 121 ) {
-	    move(&uaj,RIGHT);
+            move(&uaj,RIGHT);
         }
         if ( monitor == 120 ) {
-	    move(&uaj,LEFT);
+            move(&uaj,LEFT);
         }
-	if ( monitor == 101 ) {
-	    move(&ske,RIGHT);
+        if ( monitor == 101 ) {
+            move(&ske,RIGHT);
         }
-	if ( monitor == 114 ) {
-	    move(&ske,LEFT);
-	}
-	if ( monitor == 100 ) {
-	    move(&skf,RIGHT);
-	}
-	if ( monitor == 102 ) {
-	    move(&skf,LEFT);
-	}
-	if ( monitor == 99 ) {
-	    move(&skg,RIGHT);
-	}
-	if ( monitor == 118 ) {
-	    move(&skg,LEFT);
-	}
-	if ( monitor == 116 ) {
-	    move(&zaxis,LEFT);
-	}
-	if ( monitor == 122 ) {
-	    move(&zaxis,RIGHT);
-	}
-	if ( monitor == 111 ) {
-		tempo-=5;
-		Serial.print ("Neues Tempo: ");
-		Serial.println( tempo );
-	}
-	if ( monitor == 112 ) {
-		tempo+=5;
-		Serial.print ("Neues Tempo: ");
-		Serial.println( tempo );
-	}
-	if ( monitor == 107 ) {
-		clicks-=5;
-		Serial.print ("Anzahl Schritte: ");
-		Serial.println( clicks );
-	}
-	if ( monitor == 108 ) {
-		clicks+=5;
-		Serial.print ("Anzahl Schritte: ");
-		Serial.println( clicks );
-	}
+        if ( monitor == 114 ) {
+            move(&ske,LEFT);
+        }
+        if ( monitor == 100 ) {
+            move(&skf,RIGHT);
+        }
+        if ( monitor == 102 ) {
+            move(&skf,LEFT);
+        }
+        if ( monitor == 99 ) {
+            move(&skg,RIGHT);
+        }
+        if ( monitor == 118 ) {
+            move(&skg,LEFT);
+        }
+        if ( monitor == 116 ) {
+            move(&zaxis,LEFT);
+        }
+        if ( monitor == 122 ) {
+            move(&zaxis,RIGHT);
+        }
+        if ( monitor == 111 ) {
+            tempo-=5;
+            Serial.print ("Neues Tempo: ");
+            Serial.println( tempo );
+        }
+        if ( monitor == 112 ) {
+            tempo+=5;
+            Serial.print ("Neues Tempo: ");
+            Serial.println( tempo );
+        }
+        if ( monitor == 107 ) {
+            clicks-=5;
+            Serial.print ("Anzahl Schritte: ");
+            Serial.println( clicks );
+        }
+        if ( monitor == 108 ) {
+            clicks+=5;
+            Serial.print ("Anzahl Schritte: ");
+            Serial.println( clicks );
+        }
         Serial.println( monitor );
     }
     delay(1000);
