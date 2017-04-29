@@ -1,17 +1,15 @@
 #include <Arduino.h>
 #include <pins.h>
-volatile int cnt0 = 0;
-volatile int cnt1 = 0;
 int monitor = 0;
 
 int tempo = 30;
 int clicks = 20;
 
 void doCount0() {
-    cnt0++;
+    uaj.cnt0++;
 }
 void doCount1() {
-    cnt1++;
+    uaj.cnt1++;
 }
 
 void setup()
@@ -29,40 +27,40 @@ void setup()
     digitalWrite(uaj.right, 0);
 }
 
-void stop_motors () {
-    digitalWrite(uaj.left, 0);
-    digitalWrite(uaj.right, 0);
+void stop_motors (struct pins *input) {
+    digitalWrite(input->left, 0 );
+    digitalWrite(input->right, 0 );
+    digitalWrite(input->enable, 0);
 }
 
 void move ( struct pins *input, int direction ) {
 
-    Serial.println(cnt0);
-    int current_enc = cnt0;
-    int start_value = cnt0;
-    current_enc += clicks;
+    Serial.println(input->cnt0);
+    int target_count = input->cnt0;
+    int start_value = input->cnt0;
+    target_count += clicks;
     Serial.print(">> ");
-    Serial.print(cnt0);
+    Serial.print(input->cnt0);
     Serial.println(" <<");
     digitalWrite(input->enable, 1);
 
-    while ( current_enc > cnt0 ) {
+    while ( target_count > input->cnt0 ) {
         if ( direction == RIGHT ) {
             digitalWrite(input->right, 1);
         } else {
             digitalWrite(input->left, 1);
         }
     }
-    digitalWrite(input->left, 0 );
-    digitalWrite(input->right, 0 );
-    digitalWrite(input->enable, 0);
+
+    stop_motors(input);
 
     Serial.print(">> ");
-    Serial.print(cnt0);
+    Serial.print(input->cnt0);
     Serial.print(" >> ");
-    Serial.print(cnt0 - start_value);
+    Serial.print(input->cnt0 - start_value);
     Serial.println(" <<");
 
-    stop_motors();
+
 }
 
 void loop()
@@ -72,7 +70,7 @@ void loop()
         monitor = Serial.read();
 
         if( monitor == 49 ) { // aus
-            stop_motors();
+            stop_motors(&uaj);
         }
         if ( monitor == 121 ) {
             move(&uaj,RIGHT);
@@ -104,4 +102,3 @@ void loop()
     }
     delay(1000);
 }
-

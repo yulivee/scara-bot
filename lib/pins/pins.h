@@ -7,9 +7,9 @@ extern "C" {
 #endif
 
 #define RIGHT 1
-#define LEFT 0	
+#define LEFT 0
 
-struct pins { int left; int right; int enable; int cnt0; int cnt1; };
+struct pins { int left; int right; int enable; volatile int cnt0; volatile int cnt1; };
 
 struct pins uaj= { 5, 6, 4, 2, 3 };
 
@@ -19,4 +19,3 @@ struct pins uaj= { 5, 6, 4, 2, 3 };
 #endif
 
 #endif
-
