@@ -4,19 +4,29 @@ int monitor = 0;
 
 int tempo = 30;
 int clicks = 20;
+volatile int flag = 0;
 
 void doCount0() {
-    uaj.cnt0++;
+
+    flag = digitalRead(uaj.cnt1_pin);
+
+    if ( flag == 1 ) {
+	    uaj.cnt0++;
+    } else {
+	    uaj.cnt0--;
+    }
 }
+
 void doCount1() {
+
     uaj.cnt1++;
 }
 
 void setup()
 {
     Serial.begin(9600);
-    attachInterrupt(digitalPinToInterrupt(uaj.cnt0), doCount0, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(uaj.cnt1), doCount1, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(uaj.cnt0_pin), doCount0, HIGH);
+    attachInterrupt(digitalPinToInterrupt(uaj.cnt1_pin), doCount1, CHANGE);
     pinMode(uaj.cnt0, INPUT);
     pinMode(uaj.cnt1, INPUT);
     pinMode(uaj.enable, OUTPUT);
@@ -38,19 +48,23 @@ void move ( struct pins *input, int direction ) {
     Serial.println(input->cnt0);
     int target_count = input->cnt0;
     int start_value = input->cnt0;
-    target_count += clicks;
+
     Serial.print(">> ");
     Serial.print(input->cnt0);
     Serial.println(" <<");
     digitalWrite(input->enable, 1);
 
-    while ( target_count > input->cnt0 ) {
-        if ( direction == RIGHT ) {
-            digitalWrite(input->right, 1);
-        } else {
-            digitalWrite(input->left, 1);
-        }
-    }
+	if ( direction == RIGHT ) {
+	    target_count += clicks;
+	    while ( target_count > input->cnt0 && input->cnt0 != 0 ) {
+		    digitalWrite(input->right, 1);
+	    }
+	} else {
+	    target_count -= clicks;
+	    while ( target_count < input->cnt0 && input->cnt0 != 0 ) {
+		    digitalWrite(input->left, 1);
+	    }
+	}
 
     stop_motors(input);
 
@@ -100,5 +114,5 @@ void loop()
         }
         Serial.println( monitor );
     }
-    delay(1000);
+    delay(500);
 }
