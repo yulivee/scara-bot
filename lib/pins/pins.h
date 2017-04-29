@@ -11,7 +11,7 @@ extern "C" {
 
 struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 
-struct pins uaj= { 7, 6, 5, 2, 3 };
+struct pins uaj= { 5, 6, 4, 2, 3 };
 
 
 #ifdef __cplusplus
