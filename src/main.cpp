@@ -5,7 +5,7 @@ volatile int cnt1 = 0;
 int monitor = 0;
 
 int tempo = 30;
-int clicks = 2;
+int clicks = 20;
 
 void doCount0() {
     cnt0++;
@@ -21,6 +21,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(uaj.cnt1), doCount1, CHANGE);
     pinMode(uaj.cnt0, INPUT);
     pinMode(uaj.cnt1, INPUT);
+    pinMode(uaj.enable, OUTPUT);
     pinMode(uaj.left, OUTPUT);
     pinMode(uaj.right, OUTPUT);
 
@@ -42,6 +43,7 @@ void move ( struct pins *input, int direction ) {
     Serial.print(">> ");
     Serial.print(cnt0);
     Serial.println(" <<");
+    digitalWrite(input->enable, 1);
 
     while ( current_enc > cnt0 ) {
         if ( direction == RIGHT ) {
