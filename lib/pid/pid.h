@@ -11,7 +11,7 @@ extern "C" {
 #define MOVED 6
 #define MOVEMAX 25
 #define MOVEIMAX 200    
-#define BOUNDS(var, max) if ((var)>(max)) (var)=(max);\ if ( (var)<-(max)) (var)=-(max)
+#define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
     
 void movePID( int pointDest, uint8_t settleTime ) {
 
