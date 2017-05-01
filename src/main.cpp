@@ -27,13 +27,13 @@ void loop()
         monitor = Serial.read();
 
         if( monitor == 49 ) { // aus
-            stop_motors(&motor);
+            stop_motors(&motor_pins);
         }
         if ( monitor == 121 ) {
-            move(&motor,RIGHT);
+            move(&motor_pins, &motor_cnt, RIGHT);
         }
         if ( monitor == 120 ) {
-            move(&motor,LEFT);
+            move(&motor_pins, &motor_cnt, LEFT);
         }
         if ( monitor == 111 ) {
             tempo-=5;
