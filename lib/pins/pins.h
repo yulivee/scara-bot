@@ -12,10 +12,6 @@ extern "C" {
 struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 struct counts { volatile int cnt0; volatile int cnt1; };
 
-struct pins motor_pins = { 5, 6, 4, 2, 3 };
-struct counts motor_cnt = { 0, 0 };
-
-
 #ifdef __cplusplus
 }
 #endif

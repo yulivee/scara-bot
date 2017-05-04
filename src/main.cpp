@@ -2,8 +2,25 @@
 #include <move.h>
 #include <pid.h>
 #include <pins.h>
-#include <interrupt.h>
 int monitor = 0;
+int clicks = 30;
+
+struct pins motor_pins = { 5, 6, 4, 2, 3 };
+struct counts motor_cnt = { 0, 0 };
+
+volatile int flag = 0;                                                                                                         
+void doCount0() {                                                                                                            
+                                                                                                                                    
+   flag = digitalRead(motor_pins.cnt1);                                                                                     
+                                                                                                                                          
+   if ( flag == 1 ) {                                                                                                       
+      motor_cnt.cnt0++;                                                                                                    
+   } else {                                                                                                                 
+      motor_cnt.cnt0--;                                                                                                    
+   } 
+} 
+
+void doCount1() { motor_cnt.cnt1++; }
 
 void setup()
 {
@@ -30,20 +47,10 @@ void loop()
             stop_motors(&motor_pins);
         }
         if ( monitor == 121 ) {
-            move(&motor_pins, &motor_cnt, RIGHT);
+            move(&clicks, &motor_pins, &motor_cnt, RIGHT);
         }
         if ( monitor == 120 ) {
-            move(&motor_pins, &motor_cnt, LEFT);
-        }
-        if ( monitor == 111 ) {
-            tempo-=5;
-            Serial.print ("Neues Tempo: ");
-            Serial.println( tempo );
-        }
-        if ( monitor == 112 ) {
-            tempo+=5;
-            Serial.print ("Neues Tempo: ");
-            Serial.println( tempo );
+            move(&clicks, &motor_pins, &motor_cnt, LEFT);
         }
         if ( monitor == 107 ) {
             clicks-=5;

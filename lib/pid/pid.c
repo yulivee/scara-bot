@@ -1,6 +1,4 @@
-#ifndef PID_H_INCLUDED
-#define PID_H_INCLUDED
-
+#include <Arduino.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,9 +11,9 @@ extern "C" {
 #define MOVEIMAX 200    
 #define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
     
-void movePID( int pointDest, uint8_t settleTime ) {
+void movePID( int pin, int *point, int *pointDest, int settleTime ) {
 
-    int point, pointDelta, pointSpeed, pointLastDelta, pointDiff, pointInt;
+    int pointDelta, pointSpeed, pointLastDelta, pointDiff, pointInt;
     pointLastDelta = pointInt = 0;
 
     while( settleTime ) {
@@ -24,11 +22,10 @@ void movePID( int pointDest, uint8_t settleTime ) {
         pointLastDelta = pointDelta;
         pointInt += pointDelta;
         BOUNDS ( pointInt , MOVEIMAX );
-        pointSpeed = pointDelta * MOVEP + pointInt * MOVEI + pointDiff * MOVE;
+        pointSpeed = pointDelta * MOVEP + pointInt * MOVEI + pointDiff * MOVED;
         BOUNDS ( pointSpeed , MOVEMAX );
-        //CTMotor ( pointSpeed - angSpeed , pointSpeed + angSpeed ) ;
-        if ( pointDelta * pointDelta < 5)  ) settleTime --;
-        //_delay_ms (30) ;
+        analogWrite(pin, pointSpeed); 
+        if ( pointDelta * pointDelta < 5)  settleTime --;
     }
 
     return;
@@ -37,6 +34,4 @@ void movePID( int pointDest, uint8_t settleTime ) {
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

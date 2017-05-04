@@ -13,7 +13,7 @@ extern "C" {
 #define MOVEIMAX 200    
 #define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
     
-void movePID( int pointDest, uint8_t settleTime );
+void movePID( int pin, int *point, int *pointDest, int settleTime );
 
 #ifdef __cplusplus
 }

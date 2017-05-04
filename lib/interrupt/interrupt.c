@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <interrupt.h>
+#include <pins.h>
 
 #ifdef __cplusplus
 extern "C" {
