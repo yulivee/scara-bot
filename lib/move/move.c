@@ -16,13 +16,15 @@ void move ( int *dist, struct pins *axis, struct counts *count, int direction ) 
 
     int current_pos = count->cnt0;
     int target_pos = 0;
+    digitalWrite(axis->enable, 1);
+    delay(100);
 
     if ( direction == RIGHT ) {
         target_pos = current_pos + *dist;
-        movePID( axis->right, &current_pos, &target_pos, 1 );
+        movePID( axis->right, &current_pos, &target_pos, count, 1 );
     } else {
         target_pos = current_pos - *dist;
-        movePID( axis->left,  &current_pos, &target_pos, 1 );
+        movePID( axis->left,  &current_pos, &target_pos, count, 1 );
     }
 
     stop_motors(axis);

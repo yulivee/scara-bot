@@ -3,14 +3,14 @@
 #include <pid.h>
 #include <pins.h>
 int monitor = 0;
-int clicks = 30;
+int clicks = 120;
 
 struct pins motor_pins = { 5, 6, 4, 2, 3 };
 struct counts motor_cnt = { 0, 0 };
 
 volatile int flag = 0;                                                                                                         
 void doCount0() {                                                                                                            
-                                                                                                                                    
+   cli();                                                                                                                               
    flag = digitalRead(motor_pins.cnt1);                                                                                     
                                                                                                                                           
    if ( flag == 1 ) {                                                                                                       
@@ -18,6 +18,7 @@ void doCount0() {
    } else {                                                                                                                 
       motor_cnt.cnt0--;                                                                                                    
    } 
+   sei();
 } 
 
 void doCount1() { motor_cnt.cnt1++; }
@@ -26,7 +27,7 @@ void setup()
 {
     Serial.begin(9600);
     attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), doCount0, HIGH);
-    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt1), doCount1, CHANGE);
+    //attachInterrupt(digitalPinToInterrupt(motor_pins.cnt1), doCount1, CHANGE);
     pinMode(motor_pins.cnt0, INPUT);
     pinMode(motor_pins.cnt1, INPUT);
     pinMode(motor_pins.enable, OUTPUT);
@@ -47,9 +48,17 @@ void loop()
             stop_motors(&motor_pins);
         }
         if ( monitor == 121 ) {
+	    Serial.print("Target: ");
+	    Serial.println(motor_cnt.cnt0+clicks);
+	    Serial.print("Current: ");
+	    Serial.println(motor_cnt.cnt0);
             move(&clicks, &motor_pins, &motor_cnt, RIGHT);
         }
         if ( monitor == 120 ) {
+	    Serial.print("Target: ");
+	    Serial.println(motor_cnt.cnt0-clicks);
+	    Serial.print("Current: ");
+	    Serial.println(motor_cnt.cnt0);
             move(&clicks, &motor_pins, &motor_cnt, LEFT);
         }
         if ( monitor == 107 ) {
