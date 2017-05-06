@@ -21,11 +21,11 @@ void move ( int *dist, struct pins *axis, struct counts *count, int direction ) 
 
     if ( direction == RIGHT ) {
         target_pos = current_pos + *dist;
-        movePID( axis->right, &current_pos, &target_pos, count, 1 );
     } else {
         target_pos = current_pos - *dist;
-        movePID( axis->left,  &current_pos, &target_pos, count, 1 );
     }
+
+    movePID( axis, &current_pos, &target_pos, count, 1 );
 
     stop_motors(axis);
 

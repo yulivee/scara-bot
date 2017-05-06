@@ -12,7 +12,7 @@ extern "C" {
 #define MOVEMAX 255 //25
 #define MOVEIMAX 200  //
 #define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
-
+    
 void movePID( struct pins *axis, int *point, int *pointDest, struct counts *motor_cnt,int settleTime ) {
 
     Serial.begin(9600);
@@ -21,7 +21,7 @@ void movePID( struct pins *axis, int *point, int *pointDest, struct counts *moto
     pointLastDelta = pointInt = 0;
 
     while( settleTime ) {
-        Serial.println(motor_cnt->cnt0);
+	Serial.println(motor_cnt->cnt0);
         pointDelta = *pointDest - motor_cnt->cnt0;
         pointDiff = pointDelta - pointLastDelta;
         pointLastDelta = pointDelta;
@@ -29,17 +29,14 @@ void movePID( struct pins *axis, int *point, int *pointDest, struct counts *moto
         BOUNDS ( pointInt , MOVEIMAX );
         pointSpeed = pointDelta * MOVEP + pointInt * MOVEI + pointDiff * MOVED;
         BOUNDS ( pointSpeed , MOVEMAX );
-
-        if ( pointSpeed >= 0 ) {
-            analogWrite(axis->right, pointSpeed);
-            analogWrite(axis->left, 0);
-        } else {
-            analogWrite(axis->left, pointSpeed);
-            analogWrite(axis->right, 0);
-        }
+	if ( pointSpeed >=0 ) {
+		analogWrite(axis->right, pointSpeed); 
+	} else {
+		analogWrite(axis->left, pointSpeed);
+	}
         //if ( pointDiff * pointDelta < 5)  settleTime --;
         //if ( pointDiff < 5)  settleTime --;
-        delay(10);
+	delay(30);
     }
 
     return;

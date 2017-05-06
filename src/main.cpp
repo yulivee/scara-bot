@@ -6,7 +6,7 @@ int monitor = 0;
 int clicks = 20;
 
 struct pins motor_pins = { 5, 6, 4, 2, 3 };
-struct counts motor_cnt = { 0, 0 };
+volatile struct counts motor_cnt = { 0, 0 };
 
 volatile int flag = 0;                                                                                                         
 void doCount0() {                                                                                                            
