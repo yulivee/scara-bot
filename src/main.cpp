@@ -3,7 +3,7 @@
 #include <pid.h>
 #include <pins.h>
 int monitor = 0;
-int clicks = 120;
+int clicks = 20;
 
 struct pins motor_pins = { 5, 6, 4, 2, 3 };
 struct counts motor_cnt = { 0, 0 };
@@ -21,13 +21,10 @@ void doCount0() {
    sei();
 } 
 
-void doCount1() { motor_cnt.cnt1++; }
-
 void setup()
 {
     Serial.begin(9600);
-    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), doCount0, HIGH);
-    //attachInterrupt(digitalPinToInterrupt(motor_pins.cnt1), doCount1, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), doCount0, RISING);
     pinMode(motor_pins.cnt0, INPUT);
     pinMode(motor_pins.cnt1, INPUT);
     pinMode(motor_pins.enable, OUTPUT);
@@ -42,7 +39,8 @@ void loop()
 {
 
     if (Serial.available() > 0) {
-        monitor = Serial.read();
+	Serial.println(motor_cnt.cnt0);
+         monitor = Serial.read();
 
         if( monitor == 49 ) { // aus
             stop_motors(&motor_pins);
@@ -53,13 +51,20 @@ void loop()
 	    Serial.print("Current: ");
 	    Serial.println(motor_cnt.cnt0);
             move(&clicks, &motor_pins, &motor_cnt, RIGHT);
+	    Serial.print("After movement: ");
+	    Serial.println(motor_cnt.cnt0);
+	    
         }
         if ( monitor == 120 ) {
+	    	
 	    Serial.print("Target: ");
 	    Serial.println(motor_cnt.cnt0-clicks);
 	    Serial.print("Current: ");
 	    Serial.println(motor_cnt.cnt0);
             move(&clicks, &motor_pins, &motor_cnt, LEFT);
+	    Serial.print("After movement: ");
+	    Serial.println(motor_cnt.cnt0);
+	    
         }
         if ( monitor == 107 ) {
             clicks-=5;
@@ -73,5 +78,5 @@ void loop()
         }
         Serial.println( monitor );
     }
-    delay(500);
+    delay(100);
 }
