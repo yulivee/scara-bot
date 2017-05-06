@@ -6,14 +6,15 @@
 extern "C" {
 #endif
 
-#define MOVEP 3
-#define MOVEI 0.1
-#define MOVED 6
-#define MOVEMAX 25
+#define MOVEP 20 //P Motorspannung pro Schritt - Genauigkeit. Erzeugt Zittern und schießt übers Ziel raus
+#define MOVEI 2 //I Erhöht Motorspannung bei kleinen Fehlern - lässt die letzten bisschen Fehler verschwinden
+#define MOVED 20 //D Rechtzeitig bremsen - dämpft Zittern und rauschießen
+#define MOVEMAX 255
 #define MOVEIMAX 200    
+#define GOVERNOR_FREQ 100	
 #define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
     
-void movePID( int pin, int *point, int *pointDest, struct counts *motor_cnt, int settleTime );
+void timer_init();
 
 #ifdef __cplusplus
 }

@@ -1,16 +1,19 @@
 #include <Arduino.h>
+#include <avr/delay.h>
 #include <move.h>
 #include <pid.h>
 #include <pins.h>
 int monitor = 0;
-int clicks = 20;
+int clicks = 300;
 
-struct pins motor_pins = { 5, 6, 4, 2, 3 };
+struct pins motor_pins = { 10, 11, 4, 2, 3 };
 volatile struct counts motor_cnt = { 0, 0 };
-
+volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0;
+volatile int target_position = 0;
+volatile int current_position = 0;
 volatile int flag = 0;                                                                                                         
+
 void doCount0() {                                                                                                            
-   cli();                                                                                                                               
    flag = digitalRead(motor_pins.cnt1);                                                                                     
                                                                                                                                           
    if ( flag == 1 ) {                                                                                                       
@@ -18,13 +21,14 @@ void doCount0() {
    } else {                                                                                                                 
       motor_cnt.cnt0--;                                                                                                    
    } 
-   sei();
 } 
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
+    Serial.println("Scara-Bot ready"); 
     attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), doCount0, RISING);
+    timer_init();
     pinMode(motor_pins.cnt0, INPUT);
     pinMode(motor_pins.cnt1, INPUT);
     pinMode(motor_pins.enable, OUTPUT);
@@ -33,38 +37,29 @@ void setup()
 
     digitalWrite(motor_pins.left, 0);
     digitalWrite(motor_pins.right, 0);
+    digitalWrite(motor_pins.enable, 1);
 }
 
 void loop()
 {
 
-    if (Serial.available() > 0) {
-	Serial.println(motor_cnt.cnt0);
          monitor = Serial.read();
+	 Serial.print("Target: ");
+	 Serial.println(target_position);
+	 Serial.print("Current: ");
+	 Serial.println(motor_cnt.cnt0);
+	 Serial.print("Speed: ");
+	 Serial.println(positionSpeed);
+	 Serial.println("-------------");
 
         if( monitor == 49 ) { // aus
             stop_motors(&motor_pins);
         }
         if ( monitor == 121 ) {
-	    Serial.print("Target: ");
-	    Serial.println(motor_cnt.cnt0+clicks);
-	    Serial.print("Current: ");
-	    Serial.println(motor_cnt.cnt0);
-            move(&clicks, &motor_pins, &motor_cnt, RIGHT);
-	    Serial.print("After movement: ");
-	    Serial.println(motor_cnt.cnt0);
-	    
+	    target_position += clicks;
         }
         if ( monitor == 120 ) {
-	    	
-	    Serial.print("Target: ");
-	    Serial.println(motor_cnt.cnt0-clicks);
-	    Serial.print("Current: ");
-	    Serial.println(motor_cnt.cnt0);
-            move(&clicks, &motor_pins, &motor_cnt, LEFT);
-	    Serial.print("After movement: ");
-	    Serial.println(motor_cnt.cnt0);
-	    
+	    target_position -= clicks;
         }
         if ( monitor == 107 ) {
             clicks-=5;
@@ -76,7 +71,7 @@ void loop()
             Serial.print ("Anzahl Schritte: ");
             Serial.println( clicks );
         }
-        Serial.println( monitor );
-    }
-    delay(100);
+        //Serial.println( monitor );
+
+    _delay_ms(500);
 }
