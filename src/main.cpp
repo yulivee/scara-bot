@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <avr/delay.h>
-#include <move.h>
 #include <pid.h>
 #include <pins.h>
 int monitor = 0;
@@ -53,7 +52,8 @@ void loop()
 	 Serial.println("-------------");
 
         if( monitor == 49 ) { // aus
-            stop_motors(&motor_pins);
+	    digitalWrite(motor_pins.left, 0);
+	    digitalWrite(motor_pins.right, 0);
         }
         if ( monitor == 121 ) {
 	    target_position += clicks;

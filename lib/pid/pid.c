@@ -23,7 +23,11 @@ ISR(TIMER0_COMPA_vect) {
         positionLastDelta = positionDelta;
         positionInt += positionDelta;
         BOUNDS ( positionInt , MOVEIMAX );
-        positionSpeed = positionDelta * MOVEP + positionInt * MOVEI + positionDiff * MOVED;
+	if ( target_position == motor_cnt.cnt0 ) {
+		positionSpeed = 0;
+	} else {
+		positionSpeed = positionDelta * MOVEP + positionInt * MOVEI + positionDiff * MOVED;
+	}
         BOUNDS ( positionSpeed , MOVEMAX );
 
         if ( positionSpeed >= 0 ) {
