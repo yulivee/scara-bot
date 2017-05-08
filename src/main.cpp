@@ -10,12 +10,14 @@ volatile struct counts motor_cnt = { 0, 0 };
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0;
 volatile int target_position = 0;
 volatile int current_position = 0;
-volatile int flag = 0;                                                                                                         
+volatile int flag_0 = 0;                                                                                                         
+volatile int flag_1 = 0;                                                                                                         
 
 void doCount0() {                                                                                                            
-   flag = digitalRead(motor_pins.cnt1);                                                                                     
+   flag_0 = digitalRead(motor_pins.cnt0);                                                                                     
+   flag_1 = digitalRead(motor_pins.cnt1);                                                                                     
                                                                                                                                           
-   if ( flag == 1 ) {                                                                                                       
+   if ( flag_0 == flag_1 ) {                                                                                                       
       motor_cnt.cnt0++;                                                                                                    
    } else {                                                                                                                 
       motor_cnt.cnt0--;                                                                                                    
@@ -26,7 +28,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Scara-Bot ready"); 
-    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), doCount0, RISING);
+    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), doCount0, CHANGE);
     timer_init();
     pinMode(motor_pins.cnt0, INPUT);
     pinMode(motor_pins.cnt1, INPUT);
@@ -42,7 +44,7 @@ void setup()
 void loop()
 {
 
-         monitor = Serial.read();
+     monitor = Serial.read();
 	 Serial.print("Target: ");
 	 Serial.println(target_position);
 	 Serial.print("Current: ");
