@@ -1,0 +1,2 @@
+# Readme File
+This project aims to recreate control functionality for a COBRA industrial robot from the 80s because its logic board was grilled. The aim is to build a control using arduinos and Robot Operating System. Still largely a work in progress.
