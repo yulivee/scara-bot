@@ -1,12 +1,14 @@
-SHOULDER - oberstes Armgelenk
-UAJ 	 - U Arm Yaw
-UAE	 - U Arm Ellbow
-SKE	 - S K Ellbow
-SKF      - S K F
-SKG 	 - Gripper
+j1  Haupt Z Achse
+j2  SHOULDER  - Schultergelenk
+j3  UAE   - Under Arm Ellbow
+j4  UAJ   - Under Arm Joint
+j5  SKE   - S K E
+j6  SKF   - S K F
+Tool  SKG - Gripper
+
 
 Pins für die Lichtschranken:
-   Teil   | Flachstecker | Arduino
+   Achse  | Flachstecker | Arduino
 ----------+--------------+---------
  Shoulder |     25/26    |  18/19
 ----------+--------------+---------
@@ -22,7 +24,7 @@ Pins für die Lichtschranken:
 
 Drehencoder:
 Orange: + (5V) (Blau)
-Grau:   -      (Grün)   
+Grau:   -      (Grün)
 Weis:  Licht
 Gelb:  Licht
 
@@ -43,7 +45,7 @@ T - Z hoch
 Z - Z runter
 O - tempo-5
 P - tempo+5
-K - 107 - clicks-10 
+K - 107 - clicks-10
 L - 108 - clicks+10
 
 Arduino Interrupt-Pins:
@@ -62,14 +64,14 @@ Pin	   Color	Arm
 10	   Red		UAE
 11	   Black	AL SKG
 12	   Red		AL SKG
-13	   Orange	AL SKE               
-14    	   Orange	SHOULDER / UAJ / UAE / AL SKG (Grün) 
+13	   Orange	AL SKE
+14    	   Orange	SHOULDER / UAJ / UAE / AL SKG (Grün)
 15	   Orange	SHOULDER / UAJ / UAE / AL SKG (Grün)
 16	   Gray		SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
 17	   Gray		SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
 18	   Gray		SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
 19	   Yellow	AL SKE
-20 	   White	AL SKE		
+20 	   White	AL SKE
 21	   Yellow	AL SKF
 22	   White	AL SKF
 23	   Yellow	UAJ

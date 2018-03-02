@@ -1,4 +1,6 @@
-grau -
-orange +
-weis schranke 1
-gelb schranke 2
+Anschlüsse der Lichtschranken am Motorenkoder:
+
+- grau GND
+- orange +5V
+- weis schranke 1
+- gelb schranke 2
