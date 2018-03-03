@@ -3,13 +3,7 @@
 #include <pid.h>
 #include <pins.h>
 
-//MADA
-int joint = 3; //diese Zahl anpassen je nachdem welches Gelenk angesteuert werden soll von dem Chip
-float mada[3][7]={
-  {15,15,15,15,15,15,15}, //P-Anteile
-  {0.6,0.6,0.6,0.6,0.6,0.6,0.6}, //I-Anteile
-  {12,12,12,12,12,12,12} //D-Anteile
-};
+
 
 // VARIABLEN
 int monitor = 0;
@@ -21,8 +15,8 @@ volatile int flag_1 = 0;
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0;
 volatile int target_position = 0;
 volatile int current_position = 0;
-float MOVEP, MOVEI, MOVED; //PID Werte, Werden aus den Mada zugewiesen
-int MOVEIMAX, MOVEMAX;
+volatile float MOVEP, MOVEI, MOVED; //PID Werte, Werden aus den Mada zugewiesen
+volatile int MOVEIMAX, MOVEMAX;
 
 //FUNKTIONEN
 void count_encoder() {//Interruptfunktion zum Auswerten des Encoders

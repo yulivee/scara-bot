@@ -16,8 +16,8 @@ extern volatile struct counts motor_cnt;
 extern volatile int target_position;
 extern volatile int current_position;
 extern volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt;
-extern float MOVEP, MOVEI, MOVED;
-extern int MOVEIMAX, MOVEMAX;
+extern volatile float MOVEP, MOVEI, MOVED;
+extern volatile int MOVEIMAX, MOVEMAX;
 
 #ifdef __cplusplus
 }
