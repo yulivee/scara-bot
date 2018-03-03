@@ -46,7 +46,7 @@ void setup()
     Serial.begin(115200);
     Serial.println("Chili-Bot ready");
     //Deklarienen des Interrupts für den Motorencoder
-    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder(), CHANGE);
+    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder, CHANGE);
     //Einlesen der MADA
     setMADA();
     //Starten des Timers ???
