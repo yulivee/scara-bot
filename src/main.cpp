@@ -28,7 +28,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Scara-Bot ready");
-    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder(), CHANGE);
+    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder, CHANGE);
     timer_init();
     pinMode(motor_pins.cnt0, INPUT);
     pinMode(motor_pins.cnt1, INPUT);
@@ -54,6 +54,9 @@ void loop()
     Serial.println("-------------");
 
     if( monitor == 49 ) { // aus
+        current_position = 0;
+        target_position = 0;
+        clicks = 0;
         digitalWrite(motor_pins.left, 0);
         digitalWrite(motor_pins.right, 0);
     }
@@ -65,11 +68,13 @@ void loop()
     }
     if ( monitor == 107 ) {
         clicks-=5;
+        target_position -= clicks;
         Serial.print ("Anzahl Schritte: ");
         Serial.println( clicks );
     }
     if ( monitor == 108 ) {
         clicks+=5;
+        target_position += clicks;
         Serial.print ("Anzahl Schritte: ");
         Serial.println( clicks );
     }
