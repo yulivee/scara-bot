@@ -4,3 +4,4 @@
 .gcc-flags.json
 .piolibdeps
 *.swp
+lib/ros_lib
