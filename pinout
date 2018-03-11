@@ -1,3 +1,54 @@
+SHOULDER - oberstes Armgelenk
+UAJ 	 - U Arm Yaw
+UAE	 - U Arm Ellbow
+SKE	 - S K Ellbow
+SKF      - S K F
+SKG 	 - Gripper
+
+Pins für die Lichtschranken:
+   Teil   | Flachstecker | Arduino
+----------+--------------+---------
+ Shoulder |     25/26    |  18/19
+----------+--------------+---------
+   UAJ    |     23/24    |
+----------+--------------+---------
+   UAE	  |     27/28    |
+----------+--------------+---------
+   SKE	  |     19/20    |
+----------+--------------+---------
+   SKF    |     21/22    |
+----------+--------------+---------
+   SKG 	  |     29/30    |
+
+Drehencoder:
+Orange: + (5V) (Blau)
+Grau:   -      (Grün)   
+Weis:  Licht
+Gelb:  Licht
+
+Aktuelle Tastenbelegung zur Steuerung:
+Q - Shoulder links
+W - Shoulder rechts
+A - UAE links
+S - UAE rechts
+Y - UAJ links
+X - UAJ rechts
+E - SKE links (runter)
+R - SKE rechts (hoch)
+D - SKF links (hoch)
+F - SKF rechts (runter)
+C - Zange zu
+V - Zange auf
+T - Z hoch
+Z - Z runter
+O - tempo-5
+P - tempo+5
+K - 107 - clicks-10 
+L - 108 - clicks+10
+
+Arduino Interrupt-Pins:
+2, 3, 18, 19, 20, 21
+
 Pin	   Color	Arm
 01	   Black	AL SKE
 02	   Red		AL SKE
@@ -11,20 +62,20 @@ Pin	   Color	Arm
 10	   Red		UAE
 11	   Black	AL SKG
 12	   Red		AL SKG
-13	   Orange	SHOULDER/UAJ/UAE/AL SKG
-14    	   Orange	AL SKF/AL SKE
-15	   Gray	  	SHOULDER/UAJ/UAE/(...)
-16	   Orange	SHOULDER/UAJ/UAE/AL SKG
-17	   Gray		(...)
-18	   Gray		SHOULDER/UAJ
+13	   Orange	AL SKE               
+14    	   Orange	SHOULDER / UAJ / UAE / AL SKG (Grün) 
+15	   Orange	SHOULDER / UAJ / UAE / AL SKG (Grün)
+16	   Gray		SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
+17	   Gray		SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
+18	   Gray		SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
 19	   Yellow	AL SKE
 20 	   White	AL SKE		
 21	   Yellow	AL SKF
 22	   White	AL SKF
 23	   Yellow	UAJ
 24	   White	UAJ
-25	   Yellow	SHOULDER
-26	   White	SHOULDER
+25	   White	SHOULDER (nachgemessen)
+26	   Yellow	SHOULDER (nachgemessen)
 27	   Yellow	UAE
 28	   White	UAE
 29	   Yellow	AL SKG

@@ -1,202 +1,83 @@
 #include <Arduino.h>
-#include "pins.h"
-
+#include <avr/delay.h>
+#include <pid.h>
+#include <pins.h>
 int monitor = 0;
+int clicks = 300;
 
-int tempo = 100;
+struct pins motor_pins = { 10, 11, 4, 2, 3 };
+volatile struct counts motor_cnt = { 0, 0 };
+volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0;
+volatile int target_position = 0;
+volatile int current_position = 0;
+volatile int flag_0 = 0;
+volatile int flag_1 = 0;
+
+void count_encoder() {
+    flag_0 = digitalRead(motor_pins.cnt0);
+    flag_1 = digitalRead(motor_pins.cnt1);
+
+    if ( flag_0 == flag_1 ) {
+        motor_cnt.cnt0++;
+    } else {
+        motor_cnt.cnt0--;
+    }
+}
 
 void setup()
 {
-    Serial.begin(9600);
-    pinMode(SHOULDER_LEFT, OUTPUT);
-    pinMode(SHOULDER_RIGHT, OUTPUT);
-    pinMode(UAE_LEFT, OUTPUT);
-    pinMode(UAE_RIGHT, OUTPUT);
-    pinMode(UAJ_LEFT, OUTPUT);
-    pinMode(UAJ_RIGHT, OUTPUT);
-    pinMode(SKG_LEFT, OUTPUT);
-    pinMode(SKG_RIGHT, OUTPUT);
-    pinMode(SKF_LEFT, OUTPUT);
-    pinMode(SKF_RIGHT, OUTPUT);
-    pinMode(SKE_LEFT, OUTPUT);
-    pinMode(SKE_RIGHT, OUTPUT);
+    Serial.begin(115200);
+    Serial.println("Scara-Bot ready");
+    attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder, CHANGE);
+    timer_init();
+    pinMode(motor_pins.cnt0, INPUT);
+    pinMode(motor_pins.cnt1, INPUT);
+    pinMode(motor_pins.enable, OUTPUT);
+    pinMode(motor_pins.left, OUTPUT);
+    pinMode(motor_pins.right, OUTPUT);
 
-    analogWrite(SHOULDER_LEFT, 0);
-    analogWrite(SHOULDER_RIGHT, 0);
-    analogWrite(UAE_LEFT, 0);
-    analogWrite(UAE_RIGHT, 0);
-    analogWrite(UAJ_LEFT, 0);
-    analogWrite(UAJ_RIGHT, 0);
-    analogWrite(SKG_LEFT, 0);
-    analogWrite(SKG_RIGHT, 0);
-    analogWrite(SKF_LEFT, 0);
-    analogWrite(SKF_RIGHT, 0);
-    analogWrite(SKE_LEFT, 0);
-    analogWrite(SKE_RIGHT, 0);
-}
-void stop_motors () {
-    analogWrite(SHOULDER_LEFT, 0);
-    analogWrite(SHOULDER_RIGHT, 0);
-    analogWrite(UAE_LEFT, 0);
-    analogWrite(UAE_RIGHT, 0);
-    analogWrite(UAJ_LEFT, 0);
-    analogWrite(UAJ_RIGHT, 0);
-    analogWrite(SKG_LEFT, 0);
-    analogWrite(SKG_RIGHT, 0);
-    analogWrite(SKF_LEFT, 0);
-    analogWrite(SKF_RIGHT, 0);
-    analogWrite(SKE_LEFT, 0);
-    analogWrite(SKE_RIGHT, 0);
-}
-
-void move_shoulder_right () {
-    analogWrite(SHOULDER_LEFT, tempo);
-    analogWrite(SHOULDER_RIGHT, 0 );
-    delay(1000);
-    stop_motors();
-}
-
-void move_shoulder_left () {
-    analogWrite(SHOULDER_LEFT, 0);
-    analogWrite(SHOULDER_RIGHT, tempo );
-    delay(1000);
-    stop_motors();
-}
-
-void move_uae_right () {
-    analogWrite(UAE_LEFT,tempo);
-    analogWrite(UAE_RIGHT, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_uae_left () {
-    analogWrite(UAE_LEFT, 0);
-    analogWrite(UAE_RIGHT, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_uaj_right () {
-    analogWrite(UAJ_LEFT,tempo);
-    analogWrite(UAJ_RIGHT, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_uaj_left () {
-    analogWrite(UAJ_LEFT, 0);
-    analogWrite(UAJ_RIGHT, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_ske_right () {
-    analogWrite(SKE_LEFT,tempo);
-    analogWrite(SKE_RIGHT, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_ske_left () {
-    analogWrite(SKE_LEFT, 0);
-    analogWrite(SKE_RIGHT, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skg_right () {
-    analogWrite(SKG_LEFT,tempo);
-    analogWrite(SKG_RIGHT, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skg_left () {
-    analogWrite(SKG_LEFT, 0);
-    analogWrite(SKG_RIGHT, tempo);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skf_right () {
-    analogWrite(SKF_LEFT,tempo);
-    analogWrite(SKF_RIGHT, 0);
-    delay(1000);
-    stop_motors();
-}
-
-void move_skf_left () {
-    analogWrite(SKF_LEFT, 0);
-    analogWrite(SKF_RIGHT, tempo);
-    delay(1000);
-    stop_motors();
+    digitalWrite(motor_pins.left, 0);
+    digitalWrite(motor_pins.right, 0);
+    digitalWrite(motor_pins.enable, 1);
 }
 
 void loop()
 {
 
-    if (Serial.available() > 0) {
-        monitor = Serial.read();
+    monitor = Serial.read();
+    Serial.print("Target: ");
+    Serial.println(target_position);
+    Serial.print("Current: ");
+    Serial.println(motor_cnt.cnt0);
+    Serial.print("Speed: ");
+    Serial.println(positionSpeed);
+    Serial.println("-------------");
 
-        if( monitor == 49 ) { // aus
-            stop_motors();
-        }
-
-        if( monitor == 113 ) {
-            move_shoulder_right();
-            monitor = 49;
-        }
-
-        if( monitor == 119 ) {
-            move_shoulder_left();
-            monitor = 49;
-        }
-        if( monitor == 97 ) {
-            move_uae_left();
-            monitor = 49;
-        }
-        if ( monitor == 115 ) {
-            move_uae_right();
-            monitor = 49;
-
-        }
-        if ( monitor == 121 ) {
-            move_uaj_right();
-            monitor = 49;
-
-        }
-        if ( monitor == 120 ) {
-            move_uaj_left();
-            monitor = 49;
-
-        }
-	if ( monitor == 101 ) {
-	    move_ske_right();
-            monitor = 49;
-	}
-	if ( monitor == 114 ) {
-	    move_ske_left();
-            monitor = 49;
-	}
-	if ( monitor == 100 ) {
-	    move_skf_right();
-            monitor = 49;
-	}
-	if ( monitor == 102 ) {
-	    move_skf_left();
-            monitor = 49;
-	}
-	if ( monitor == 99 ) {
-	    move_skg_right();
-            monitor = 49;
-	}
-	if ( monitor == 118 ) {
-	    move_skg_left();
-            monitor = 49;
-	}
-        Serial.println( monitor );
+    if( monitor == 49 ) { // aus
+        current_position = 0;
+        target_position = 0;
+        clicks = 0;
+        digitalWrite(motor_pins.left, 0);
+        digitalWrite(motor_pins.right, 0);
     }
-    delay(100);
-}
+    if ( monitor == 121 ) {
+        target_position += clicks;
+    }
+    if ( monitor == 120 ) {
+        target_position -= clicks;
+    }
+    if ( monitor == 107 ) {
+        clicks-=5;
+        target_position -= clicks;
+        Serial.print ("Anzahl Schritte: ");
+        Serial.println( clicks );
+    }
+    if ( monitor == 108 ) {
+        clicks+=5;
+        target_position += clicks;
+        Serial.print ("Anzahl Schritte: ");
+        Serial.println( clicks );
+    }
 
+    _delay_ms(500);
+}
