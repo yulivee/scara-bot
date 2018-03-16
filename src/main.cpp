@@ -1,10 +1,12 @@
 #include <Arduino.h>
+#include <ros.h>
 #include <avr/delay.h>
 #include <pid.h>
 #include <pins.h>
 int monitor = 0;
 int clicks = 300;
 
+//struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 struct pins motor_pins = { 10, 11, 4, 2, 3 };
 volatile struct counts motor_cnt = { 0, 0 };
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0;

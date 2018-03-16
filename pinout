@@ -20,6 +20,23 @@ Pins für die Lichtschranken:
 ----------+--------------+---------
    SKG 	  |     29/30    |
 
+Pinout an Motorplatine
+Pin 1 ist der am nächsten zum Motor
+
+  Pin | Arduino | Funktion
+------+--------------
+  1   | Motor +24V
+------+--------------
+  2   | Motor GND 
+------+--------------
+  3   | Lichtschranke +5V (über Widerstand mit LS Ausgang verbunden)
+------+--------------
+  4   | Ausgang LS 1
+------+--------------
+  5   | Lichtschranke GND
+------+--------------
+  6   | Ausgang LS 2
+
 Drehencoder:
 Orange: + (5V) (Blau)
 Grau:   -      (Grün)   
