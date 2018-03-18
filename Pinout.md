@@ -1,9 +1,12 @@
-SHOULDER - oberstes Armgelenk
-UAJ 	 - U Arm Yaw
-UAE	 - U Arm Ellbow
-SKE	 - S K Ellbow
-SKF      - S K F
-SKG 	 - Gripper
+### Axis Definition
+
+
+| SHOULDER | oberstes Armgelenk |
+| UAJ 	   | U Arm Yaw |
+| UAE	   | U Arm Ellbow |
+| SKE	   | S K Ellbow |
+| SKF      | S K F |
+| SKG 	   | Gripper |
 
 Pins für die Lichtschranken:
    Teil   | Flachstecker | Arduino
