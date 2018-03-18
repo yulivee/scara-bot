@@ -23,7 +23,8 @@
 |SKG |S K Gripper       |    |
 
 <a name="pin_ls" href="#"></a>
-###Pins für die Lichtschranken:
+### Pins für die Lichtschranken
+    
 | Teil   | Flachstecker | Arduino |
 | ------------- |:-------------:| -----:|
  Shoulder |     25/26    |  18/19
@@ -34,7 +35,8 @@
    SKG 	  |     29/30    |  
 
 <a name="pin_motor" href="#"></a>
-###Pinout an Motorplatine
+### Pinout an Motorplatine
+
 Pin 1 ist der am nächsten zum Motor
 
 |  Pin |  NAME  | Farbe   | Funktion
