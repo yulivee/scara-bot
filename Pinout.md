@@ -1,13 +1,13 @@
 ##### Table of Contents
 
-[Axis Definition](#axis_def)
-[Pins für die Lichtschranken](#pin_ls)
-[Pinout an Motorplatine](#pin_motor)
-[Kabelbelegung der einzelnen Motoren](#kabel_motor)
-[Anschluss an die H-Bridges](#anschluss_hb)
-[Pinout Flachstecker Scara-Bot](#pin_stecker)
-[Aktuelle Tastenbelegung zur Steuerung](#tasten)
-[Arduino Interrupt-Pins](#interrupt)
+[Axis Definition](#axis_def)  
+[Pins für die Lichtschranken](#pin_ls)  
+[Pinout an Motorplatine](#pin_motor)  
+[Kabelbelegung der einzelnen Motoren](#kabel_motor)  
+[Anschluss an die H-Bridges](#anschluss_hb)  
+[Pinout Flachstecker Scara-Bot](#pin_stecker)  
+[Aktuelle Tastenbelegung zur Steuerung](#tasten)  
+[Arduino Interrupt-Pins](#interrupt)  
 
    
 <a name="axis_def" href="#"></a>
@@ -27,11 +27,11 @@
 | Teil   | Flachstecker | Arduino |
 | ------------- |:-------------:| -----:|
  Shoulder |     25/26    |  18/19
-   UAJ    |     23/24    |
-   UAE	  |     27/28    |
-   SKE	  |     19/20    |
-   SKF    |     21/22    |
-   SKG 	  |     29/30    |
+   UAJ    |     23/24    |  
+   UAE	  |     27/28    |  
+   SKE	  |     19/20    |  
+   SKF    |     21/22    |  
+   SKG 	  |     29/30    |  
 
 <a name="pin_motor" href="#"></a>
 ###Pinout an Motorplatine
