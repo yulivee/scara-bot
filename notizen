@@ -4,3 +4,5 @@ X UAJ
 X SKE
 X SKG
 X SKF
+ 
+ROS Baudrate anpassen: nh.getHardware()->setBaud(BAUD)
