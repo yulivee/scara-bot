@@ -28,16 +28,16 @@ void drive_to_cb ( const std_msgs::Int32& clicks ) {
 }
 
 void home_cb ( const std_msgs::Empty& toggle_msg ) {
-        target_position = digitalRead(motor_pins.cnt0);
         motor_cnt.cnt0 = 0;
         motor_cnt.cnt1 = 0;
+        target_position = motor_cnt.cnt0;
 }
 
 void toggle_motor_cb ( const std_msgs::Empty& toggle_msg ) {
+    target_position = motor_cnt.cnt0;
     digitalWrite(motor_pins.left, 0);
     digitalWrite(motor_pins.right, 0);
     digitalWrite(motor_pins.enable, !digitalRead(motor_pins.enable));
-    target_position = digitalRead(motor_pins.cnt0);
 }
 
 ros::Subscriber<std_msgs::Int32> drive_to("drive_to", &drive_to_cb );
@@ -61,13 +61,13 @@ void count_encoder() {
 void setup()
 {
     nh.initNode();
+    nh.advertise(wheel_encoder_clicks);
     nh.subscribe(drive_to);
     nh.subscribe(drive_distance);
     nh.subscribe(home);
     nh.subscribe(toggle_motor);
 
     nh.getHardware()->setBaud(57600);
-    nh.advertise(wheel_encoder_clicks);
     attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder, CHANGE);
     timer_init();
 
