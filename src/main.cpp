@@ -40,12 +40,13 @@ void toggle_motor_cb ( const std_msgs::Empty& toggle_msg ) {
     digitalWrite(motor_pins.enable, !digitalRead(motor_pins.enable));
 }
 
+//define Ros subscribers
 ros::Subscriber<std_msgs::Int32> drive_to("drive_to", &drive_to_cb );
 ros::Subscriber<std_msgs::Int32> drive_distance("drive_dist", &drive_dist_cb );
 ros::Subscriber<std_msgs::Empty> home("home", &home_cb );
 ros::Subscriber<std_msgs::Empty> toggle_motor("toggle_motor", &toggle_motor_cb );
 
-
+//count encoder steps function for interrupt
 void count_encoder() {
     flag_0 = digitalRead(motor_pins.cnt0);
     flag_1 = digitalRead(motor_pins.cnt1);
@@ -60,6 +61,7 @@ void count_encoder() {
 
 void setup()
 {
+    //Initialise Ros Node, publisher and subsribers
     nh.initNode();
     nh.advertise(wheel_encoder_clicks);
     nh.subscribe(drive_to);
@@ -67,10 +69,16 @@ void setup()
     nh.subscribe(home);
     nh.subscribe(toggle_motor);
 
+    //Set baud rate for Ros serial communication
     nh.getHardware()->setBaud(57600);
+
+    //start interrupt for counting the encoder steps
     attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder, CHANGE);
+
+    //start timer interrupt for PID controller
     timer_init();
 
+    //initialise pins
     pinMode(motor_pins.cnt0, INPUT);
     pinMode(motor_pins.cnt1, INPUT);
     pinMode(motor_pins.enable, OUTPUT);
@@ -84,10 +92,11 @@ void setup()
 
 void loop()
 {
-
+    //publish clicks to Ros
     click_msg.data = motor_cnt.cnt0;
     wheel_encoder_clicks.publish( &click_msg );
 
+    //cyclical communication with Ros Master
     nh.spinOnce();
     _delay_ms(500);
 }
