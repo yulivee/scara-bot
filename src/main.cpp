@@ -8,7 +8,7 @@
 
 //struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 struct pins motor_pins = { 10, 11, 4, 2, 3 };
-volatile struct counts motor_cnt = { 0, 0 };
+volatile int motor_cnt = 0;
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0;
 volatile int target_position = 0;
 volatile int flag_0 = 0;
@@ -28,13 +28,12 @@ void drive_to_cb ( const std_msgs::Int32& clicks ) {
 }
 
 void home_cb ( const std_msgs::Empty& toggle_msg ) {
-        motor_cnt.cnt0 = 0;
-        motor_cnt.cnt1 = 0;
-        target_position = motor_cnt.cnt0;
+        motor_cnt = 0;
+        target_position = motor_cnt;
 }
 
 void toggle_motor_cb ( const std_msgs::Empty& toggle_msg ) {
-    target_position = motor_cnt.cnt0;
+    target_position = motor_cnt;
     digitalWrite(motor_pins.left, 0);
     digitalWrite(motor_pins.right, 0);
     digitalWrite(motor_pins.enable, !digitalRead(motor_pins.enable));
@@ -52,9 +51,9 @@ void count_encoder() {
     flag_1 = digitalRead(motor_pins.cnt1);
 
     if ( flag_0 == flag_1 ) {
-        motor_cnt.cnt0++;
+        motor_cnt++;
     } else {
-        motor_cnt.cnt0--;
+        motor_cnt--;
     }
 
 }
@@ -93,7 +92,7 @@ void setup()
 void loop()
 {
     //publish clicks to Ros
-    click_msg.data = motor_cnt.cnt0;
+    click_msg.data = motor_cnt;
     wheel_encoder_clicks.publish( &click_msg );
 
     //cyclical communication with Ros Master
