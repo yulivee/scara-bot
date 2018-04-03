@@ -20,12 +20,14 @@
 | :------: | :---: |
 | 14.5 cm  | 34    |
 |  7.5 cm  | 12    |
+
 ![Gear 3](/doc/gear_3_lowres.jpg)
 
 ### Gear 4
 | Diameter | Teeth |
 | :------: | :---: |
 | 14.4 cm  | 27    |
+
 ![Gear 4](/doc/gear_4_lowres.jpg)
 
 ## Gear Ratio
