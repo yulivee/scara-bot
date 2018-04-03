@@ -9,6 +9,8 @@
 //struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 struct pins motor_pins = { 10, 11, 4, 2, 3 };
 volatile int motor_cnt = 0;
+volatile struct pid_position pid_position = { 0, 0, 0, 0, 0 };
+volatile struct pid_parameters pid_parameters = { 15, 0.6, 12, 255, 100, 100 };
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0;
 volatile int target_position = 0;
 volatile int flag_0 = 0;
@@ -80,7 +82,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder, CHANGE);
 
     //start timer interrupt for PID controller
-    timer_init();
+    timer_init(&pid_parameters->govenor_freq);
 
     //initialise pins
     pinMode(motor_pins.cnt0, INPUT);
@@ -99,7 +101,7 @@ void loop()
     // wait until the node handle has connected to ROS
     while(!nh.connected()) {nh.spinOnce();}
     int test_value;
-    if (! nh.getParam("/scara/test", &test_value, 1 )) {
+    if (! nh.getParam("/scara/uaj/pid/p", &test_value, 1 )) {
         // default values
         test_value = 0;
     }

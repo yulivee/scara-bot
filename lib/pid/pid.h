@@ -20,7 +20,24 @@ extern "C" {
 #define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
 
 //function declarations:    
-void timer_init();
+void timer_init(int *governor_freq);
+
+struct pid_position {
+        int delta;
+        int speed;
+        int last_delta;
+        int diff;
+        int integral;
+};
+
+struct pid_parameters {
+        int p;
+        float i;
+        int d;
+        int max_speed;
+        int int_max;
+        int govenor_freq;
+};
 
 #ifdef __cplusplus
 }

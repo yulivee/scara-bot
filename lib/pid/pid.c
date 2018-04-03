@@ -7,11 +7,11 @@
 extern "C" {
 #endif
 
-void timer_init() {
+void timer_init( int *governor_freq ) {
     //Set registers to start timer interrupt, with freqency 156.25 hertz ~ 6ms
     TCCR0A=(1<<WGM01);
     TCCR0B=(5<<CS00);
-    OCR0A=F_CPU/1024/GOVERNOR_FREQ;
+    OCR0A=F_CPU/1024/(*govenor_freq);
     TIMSK0=(1<<OCIE0A);
 }
 
@@ -23,28 +23,28 @@ ISR(TIMER0_COMPA_vect) {
     PORTB|=0x20;
 
     //calculate values for PID controller
-    positionDelta = target_position - motor_cnt;
-    positionDiff = positionDelta - positionLastDelta;
-    positionLastDelta = positionDelta;
-    positionInt += positionDelta;
-    BOUNDS ( positionInt , MOVEIMAX );
+    pid_position.delta = target_position - motor_cnt;
+    pid_position.diff = pid_position.delta - pid_position.last_delta;
+    pid_position.last_delta = pid_position.delta;
+    pid_position.integral = pid_position.delta;
+    BOUNDS ( pid_position.integral , pid_parameters.int_max );
 
     if ( target_position == motor_cnt ) {
-        positionSpeed = 0;
+        pid_position.speed = 0;
     } else {
         //caluclate speed with PID control
-        positionSpeed = positionDelta * MOVEP + positionInt * MOVEI + positionDiff * MOVED;
+        pid_position.speed = pid_position.delta * pid_parameters.p + pid_position.integral * pid_parameters.i + pid_position.diff * pid_parameters.d;
     }
-    BOUNDS ( positionSpeed , MOVEMAX );
+    BOUNDS ( pid_position.speed , pid_parameters.max_speed );
 
     //set Motors with speed value
-    if ( positionSpeed >= 0 ) {
+    if ( pid_position.speed >= 0 ) {
         analogWrite(motor_pins.left, 0);
-        analogWrite(motor_pins.right, positionSpeed);
+        analogWrite(motor_pins.right, pid_position.speed);
 
     } else {
         analogWrite(motor_pins.right, 0);
-        analogWrite(motor_pins.left, 0 - positionSpeed);
+        analogWrite(motor_pins.left, 0 - pid_position.speed);
     }
 
     //AND with 011111 on PORTB, set firt pin LOW
