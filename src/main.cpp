@@ -16,7 +16,9 @@ volatile int flag_1 = 0;
 
 ros::NodeHandle nh;
 std_msgs::Int32 click_msg;
+std_msgs::Int32 test_msg;
 ros::Publisher wheel_encoder_clicks("wheel_encoder_clicks", &click_msg);
+ros::Publisher test("test", &test_msg);
 
 // callback functions for Ros Subscribers
 void drive_dist_cb ( const std_msgs::Int32& clicks ) {
@@ -63,10 +65,13 @@ void setup()
     //Initialise Ros Node, publisher and subsribers
     nh.initNode();
     nh.advertise(wheel_encoder_clicks);
+    nh.advertise(test);
     nh.subscribe(drive_to);
     nh.subscribe(drive_distance);
     nh.subscribe(home);
     nh.subscribe(toggle_motor);
+
+
 
     //Set baud rate for Ros serial communication
     nh.getHardware()->setBaud(57600);
@@ -91,9 +96,19 @@ void setup()
 
 void loop()
 {
+    // wait until the node handle has connected to ROS
+    while(!nh.connected()) {nh.spinOnce();}
+    int test_value;
+    if (! nh.getParam("/scara/test", &test_value, 1 )) {
+        // default values
+        test_value = 0;
+    }
+
+    test_msg.data = test_value;
     //publish clicks to Ros
     click_msg.data = motor_cnt;
     wheel_encoder_clicks.publish( &click_msg );
+    test.publish( &test_msg );
 
     //cyclical communication with Ros Master
     nh.spinOnce();
