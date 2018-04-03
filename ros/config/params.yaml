@@ -1,0 +1,20 @@
+uaj:
+        pid:    
+                p:   15
+                i:   0.6   
+                d:   12
+                max:         255
+                i_max:       100
+                freq:        100
+        gears:
+                ratio:  20.2
+uae:
+        pid_p:   15
+        pid_i:   0.6   
+        pid_d:   12
+        pid_max:         255
+        pid_i_max:       100
+        pid_freq:        100
+
+
+# https://en.wikipedia.org/wiki/YAML#Syntax                
