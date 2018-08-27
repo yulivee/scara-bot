@@ -1,0 +1,14 @@
+Master Board: Arduino Mega (Coordinator)
+Slave Boards: 7x Arduino Nano (Motorcontroller)
+
+Signalleitungen für jeden Slave einzeln:
+  - PRIME[1-7]: Wenn TRUE ist der Slave "geprimed" und darf auf der Seriellen Schnisttstelle senden/empfangen
+
+Signalleitungen von einem einzelnen Master Ausgang zu allen Slaves: (Sternverteilt)
+  - HOLD: Aktiviert Regelung, wenn FALSE wird IST dauerhaft gleich SOLL gesetzt. ermöglicht händisches Verschieben und somit teachen des Roboters.
+  - FIRE: Wert von "NEXTPOS" Variable wird in SOLL copiert. Wenn die Regler activ sind faren alle achsen gleichzeitig los. Kein synchrones Fahren!
+  - (optional) READ: "geprimter" Slave schreibt sein IST-Wert auf den Seriellen-Bus
+  - Master TX1 (senden) --> Slaves RX0 (empfangen)
+  - Master RX1 (empfangen) --> Slaves TX0 (senden)
+
+  GND muss im gesamten Netzwerk verbunden sein.
