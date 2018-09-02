@@ -18,9 +18,9 @@ void timer_init() {
 ISR(TIMER0_COMPA_vect) {
 
     //set first pin of regiser B to output (Aduino Pin D8/AVR Pin PB0)
-    DDRB|=0x20;
+    //DDRB|=0x20;
     //set output HIGH
-    PORTB|=0x20;
+    //PORTB|=0x20;
 
     //calculate values for PID controller
     positionDelta = target_position - motor_cnt;
@@ -48,7 +48,7 @@ ISR(TIMER0_COMPA_vect) {
     }
 
     //AND with 011111 on PORTB, set firt pin LOW
-    PORTB&=~0x20;
+    //PORTB&=~0x20;
 
 }
 
