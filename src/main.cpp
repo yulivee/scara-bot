@@ -18,7 +18,8 @@ volatile int pin_fire = 6;  //sets target position to next position
 volatile int pin_write = 7; //tells slave to read next position (from serial) or to post motor count (to serial)
 volatile int pin_prime = 9; //lets slave use the serial bus
 
-volatile int pin_led = 13;
+volatile int pin_led1 = 13;
+volatile int pin_led2 = 12;
 
 volatile word next_position = 0;
 volatile bool pin_toggled_high = true;
@@ -99,22 +100,26 @@ void setup(){
   pinMode(pin_fire, INPUT);
   pinMode(pin_write, INPUT);
   pinMode(pin_prime, INPUT);
-  pinMode(pin_led, OUTPUT);
-
+  pinMode(pin_led1, OUTPUT);
+  pinMode(pin_led2, OUTPUT);
 
   //make sure all motors are off, activate drivers are active
   digitalWrite(motor_pins.left, 0);
   digitalWrite(motor_pins.right, 0);
   digitalWrite(motor_pins.enable, 1);
-  digitalWrite(pin_led, 0);
-
+  //debugging
+  digitalWrite(pin_led1, 1);
+  digitalWrite(pin_led2, 1);
+  delay(1000);
+  digitalWrite(pin_led1, 0);
+  digitalWrite(pin_led2, 0);
 }
 
 void loop()
 {
   if (digitalRead(pin_prime)){  //prime signal tells Slave to send or receive data on the serial bus
     //turn on LED while priming
-    digitalWrite(pin_led, 1);
+    digitalWrite(pin_led1, 1);
     if (pin_toggled_high) {     //check that sigal has been toggled from off to on
       pin_toggled_high = false;
 
@@ -133,6 +138,7 @@ void loop()
         delay(500);
       }
       else{//read from bus
+        digitalWrite(pin_led2, 0);
         //clear serial buffer
         serial_clear();
         //send ready byte
@@ -140,16 +146,16 @@ void loop()
         //read next position from serial (2 bytes)
         next_position = serial_read_2b_word();
         //debugging
-        //Serial.println(next_position);
-        //Serial.write(lowByte(next_position));
-        //Serial.write(highByte(next_position));
-
+        Serial.println(next_position);
+        Serial.write(lowByte(next_position));
+        Serial.write(highByte(next_position));
+        digitalWrite(pin_led2, 0);
       }
     }
   }
   else{ //reset variable for recognising off-on toggles
     //turn off LED after Priming
-    digitalWrite(pin_led, 0);
+    digitalWrite(pin_led1, 0);
     pin_toggled_high = true;
   }
 
