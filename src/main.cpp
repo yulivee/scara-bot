@@ -5,6 +5,8 @@
 #include <pid.h>
 #include <pins.h>
 
+String slave_name = "Slave 1";
+
 //struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 struct pins motor_pins = { 10, 11, 4, 2, 3 };
 volatile int motor_cnt = 0; //position the motor ist at
@@ -64,24 +66,9 @@ void serial_clear(){
   }
 }
 
-word serial_read_2b_word(){
-  byte byte_buffer[2];
-  Serial.readBytes(byte_buffer,2); //Store the next 2 Bytes of serial data in the buffer
-  //convert buffer to conv_integer
-  word val = ((byte_buffer[1]) << 8) + byte_buffer[0];
-  return val;
-}
-
-void serial_write_2b_word(word val){
-  Serial.write(lowByte(val));
-  Serial.write(highByte(val));
-}
-
 void setup(){
   //Set the Serialport to 9600 Baud (other Bauds are possible, up to 115200)
   Serial.begin(9600);
-  //DEBUG
-  Serial.println("Hello");
 
   //start interrupt for counting the encoder steps
   attachInterrupt(digitalPinToInterrupt(motor_pins.cnt0), count_encoder, CHANGE);
@@ -101,58 +88,43 @@ void setup(){
   pinMode(pin_prime, INPUT);
   pinMode(pin_led, OUTPUT);
 
-
   //make sure all motors are off, activate drivers are active
   digitalWrite(motor_pins.left, 0);
   digitalWrite(motor_pins.right, 0);
   digitalWrite(motor_pins.enable, 1);
   digitalWrite(pin_led, 0);
-
 }
 
 void loop()
 {
   if (digitalRead(pin_prime)){  //prime signal tells Slave to send or receive data on the serial bus
-    //turn on LED while priming
-    digitalWrite(pin_led, 1);
+
     if (pin_toggled_high) {     //check that sigal has been toggled from off to on
       pin_toggled_high = false;
 
       if (digitalRead(pin_write)) {  //write to bus
-        serial_write_2b_word(motor_cnt);
-        //debugging
-        Serial.println("");
-        Serial.print("target_position: ");
-        Serial.println(target_position);
-        serial_write_2b_word(target_position);
-        Serial.println("");
-        Serial.print("next_position: ");
-        Serial.println(next_position);
-        serial_write_2b_word(next_position);
-        Serial.println("");
-        delay(500);
+        Serial.println("this is " + slave_name);
       }
       else{//read from bus
-        //clear serial buffer
-        serial_clear();
-        //send ready byte
-        Serial.write(255);
-        //read next position from serial (2 bytes)
-        next_position = serial_read_2b_word();
-        //debugging
-        //Serial.println(next_position);
-        //Serial.write(lowByte(next_position));
-        //Serial.write(highByte(next_position));
-
+        serial_clear();         //clear serial buffer
+        //send ready signal
+        Serial.println(slave_name + "ready");
+        //read char from serial
+        char serial_data = Serial.read();
+        if (serial_data == 'h'){
+          //turn on LED
+          digitalWrite(pin_led, 1);
+        }else if (serial_data == 'l')
+      {
+        //turn off LED
+        digitalWrite(pin_led, 0);
+      }
       }
     }
   }
-  else{ //reset variable for recognising off-on toggles
-    //turn off LED after Priming
-    digitalWrite(pin_led, 0);
+  else{ //reset variable for recognising off-on toggle
     pin_toggled_high = true;
   }
-
 
   if (!digitalRead(pin_hold)) {
     //deactivate motors
@@ -163,6 +135,5 @@ void loop()
   if (digitalRead(pin_fire)) {
     target_position = next_position;
   }
-
 
 }
