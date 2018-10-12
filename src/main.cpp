@@ -5,25 +5,29 @@
 #include <pid.h>
 #include <pins.h>
 
-String slave_name = "Slave 1";
-
-//struct pins { int left; int right; int enable; int cnt0; int cnt1; };
-struct pins motor_pins = { 10, 11, 4, 2, 3 };
+// -------------------------------
+// VARIABLES
+// -------------------------------
+//String slave_name = "Slave 1";
+String slave_name = "Slave 2";
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0; //PID variables
 volatile int target_position = 0;
 volatile int flag_0 = 0; //direction flag
 volatile int flag_1 = 0; //direction flag
-
-volatile int pin_hold = 5;  //activates PID
-volatile int pin_fire = 6;  //sets target position to next position
-volatile int pin_write = 7; //tells slave to read next position (from serial) or to post motor count (to serial)
-volatile int pin_prime = 9; //lets slave use the serial bus
-
-volatile int pin_led = 13;
-
 volatile word next_position = 0;
 volatile bool pin_toggled_high = true;
+
+// -------------------------------
+//PINOUT:
+// -------------------------------
+volatile int pin_hold = 5;  //Input: activates PID, normal HIGH
+volatile int pin_fire = 6;  //Input: sets target position to next position, normal LOW
+volatile int pin_write = 7; //Input: allows slave to write to serial bus, normal LOW
+volatile int pin_prime = 9; //Input: lets slave use the serial bus, normal LOW, private slave signal
+volatile int pin_led1 = 13; //Output: onboard LED
+volatile int pin_led2 = 12; //Output: offboard LED
+struct pins motor_pins = { 10, 11, 4, 2, 3 }; //struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 
 // commented out for use as templae for needed functions
 //
@@ -48,6 +52,9 @@ volatile bool pin_toggled_high = true;
 //     digitalWrite(motor_pins.enable, !digitalRead(motor_pins.enable));
 // }
 
+// -------------------------------
+//FUNCTIONS
+// -------------------------------
 //count encoder steps function for interrupt
 void count_encoder(){
   flag_0 = digitalRead(motor_pins.cnt0);
@@ -66,6 +73,9 @@ void serial_clear(){
   }
 }
 
+// -------------------------------
+// MAIN
+// -------------------------------
 void setup(){
   //Set the Serialport to 9600 Baud (other Bauds are possible, up to 115200)
   Serial.begin(9600);
@@ -86,21 +96,34 @@ void setup(){
   pinMode(pin_fire, INPUT);
   pinMode(pin_write, INPUT);
   pinMode(pin_prime, INPUT);
-  pinMode(pin_led, OUTPUT);
+  pinMode(pin_led1, OUTPUT);
+  pinMode(pin_led2, OUTPUT);
 
   //make sure all motors are off, activate drivers are active
   digitalWrite(motor_pins.left, 0);
   digitalWrite(motor_pins.right, 0);
   digitalWrite(motor_pins.enable, 1);
-  digitalWrite(pin_led, 0);
+  digitalWrite(pin_led1, 1);
+  digitalWrite(pin_led2, 1);
+  delay(500);
+  digitalWrite(pin_led1, 0);
+  digitalWrite(pin_led2, 0);
 }
 
 void loop()
 {
+  // read from port 0, send to port 1:
+  //if (Serial.available()) {
+  //  digitalWrite(pin_led1, 1);
+  //  Serial.write(Serial.read());
+//    digitalWrite(pin_led1, 0);
+//  }
+
   if (digitalRead(pin_prime)){  //prime signal tells Slave to send or receive data on the serial bus
 
     if (pin_toggled_high) {     //check that sigal has been toggled from off to on
       pin_toggled_high = false;
+      digitalWrite(pin_led1, 1);
 
       if (digitalRead(pin_write)) {  //write to bus
         Serial.println("this is " + slave_name);
@@ -108,22 +131,28 @@ void loop()
       else{//read from bus
         serial_clear();         //clear serial buffer
         //send ready signal
-        Serial.println(slave_name + "ready");
+        Serial.println(slave_name + " ready");
         //read char from serial
+        while (Serial.available() == 0) {
+          delay(100);
+        }
         char serial_data = Serial.read();
+
+        digitalWrite(pin_led1, 0);
         if (serial_data == 'h'){
           //turn on LED
-          digitalWrite(pin_led, 1);
+          digitalWrite(pin_led2, 1);
         }else if (serial_data == 'l')
       {
         //turn off LED
-        digitalWrite(pin_led, 0);
+        digitalWrite(pin_led2, 0);
       }
       }
     }
   }
   else{ //reset variable for recognising off-on toggle
     pin_toggled_high = true;
+    digitalWrite(pin_led1, 0);
   }
 
   if (!digitalRead(pin_hold)) {
