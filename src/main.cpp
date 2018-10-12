@@ -8,8 +8,8 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-//String slave_name = "Slave 1";
-String slave_name = "Slave 2";
+String slave_name = "Slave 1";
+//String slave_name = "Slave 2";
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0; //PID variables
 volatile int target_position = 0;
@@ -24,6 +24,7 @@ volatile bool pin_toggled_high = true;
 volatile int pin_hold = 5;  //Input: activates PID, normal HIGH
 volatile int pin_fire = 6;  //Input: sets target position to next position, normal LOW
 volatile int pin_write = 7; //Input: allows slave to write to serial bus, normal LOW
+int debug_pin = 8;
 volatile int pin_prime = 9; //Input: lets slave use the serial bus, normal LOW, private slave signal
 volatile int pin_led1 = 13; //Output: onboard LED
 volatile int pin_led2 = 12; //Output: offboard LED
@@ -73,6 +74,19 @@ void serial_clear(){
   }
 }
 
+word serial_read_int(){
+  byte byte_buffer[2];
+  Serial.readBytes(byte_buffer,2); //Store the next 2 Bytes of serial data in the buffer
+  //convert buffer to conv_integer
+  int val = ((byte_buffer[1]) << 8) + byte_buffer[0];
+  return val;
+}
+
+void serial_write_int(int val){
+  Serial.write(lowByte(val));
+  Serial.write(highByte(val));
+}
+
 // -------------------------------
 // MAIN
 // -------------------------------
@@ -98,6 +112,7 @@ void setup(){
   pinMode(pin_prime, INPUT);
   pinMode(pin_led1, OUTPUT);
   pinMode(pin_led2, OUTPUT);
+  pinMode(debug_pin, OUTPUT);
 
   //make sure all motors are off, activate drivers are active
   digitalWrite(motor_pins.left, 0);
@@ -108,6 +123,7 @@ void setup(){
   delay(500);
   digitalWrite(pin_led1, 0);
   digitalWrite(pin_led2, 0);
+  digitalWrite(debug_pin, 0);
 }
 
 void loop()
@@ -132,12 +148,17 @@ void loop()
         serial_clear();         //clear serial buffer
         //send ready signal
         Serial.println(slave_name + " ready");
-        //read char from serial
+        digitalWrite(debug_pin,1);
+
         while (Serial.available() == 0) {
           delay(100);
         }
-        char serial_data = Serial.read();
+        //read char from serial
+        digitalWrite(debug_pin,0);
+        int serial_data = serial_read_int();
+        Serial.println(slave_name + " received " + serial_data);
 
+/*
         digitalWrite(pin_led1, 0);
         if (serial_data == 'h'){
           //turn on LED
@@ -146,7 +167,7 @@ void loop()
       {
         //turn off LED
         digitalWrite(pin_led2, 0);
-      }
+      } */
       }
     }
   }
