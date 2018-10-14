@@ -74,7 +74,7 @@ void serial_clear(){
   }
 }
 
-word serial_read_int(){
+int serial_read_int(){
   byte byte_buffer[2];
   Serial.readBytes(byte_buffer,2); //Store the next 2 Bytes of serial data in the buffer
   //convert buffer to conv_integer
