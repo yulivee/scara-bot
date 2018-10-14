@@ -8,7 +8,8 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-String slave_name = "Slave 1";
+const String slave_name = "Slave 1";
+const int slave_number = 0;
 //String slave_name = "Slave 2";
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0; //PID variables
@@ -85,6 +86,11 @@ int serial_read_int(){
 void serial_write_int(int val){
   Serial.write(lowByte(val));
   Serial.write(highByte(val));
+}
+
+// TODO
+void ping(){
+  serial_write_int(slave_number);
 }
 
 // -------------------------------
