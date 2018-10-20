@@ -1,4 +1,4 @@
-![robot_kinematic](doc/IMG-20150512-WA0000.jpg)
+![robot_kinematic](images/IMG-20150512-WA0000.jpg)
 
 # Kinematic Axis
 | Axis Name     | Axis Number  |
