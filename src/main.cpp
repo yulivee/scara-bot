@@ -8,9 +8,8 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-const String slave_name = "Slave 1";
-const int slave_number = 0;
-//String slave_name = "Slave 2";
+const int slave_number = 1;
+
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0; //PID variables
 volatile int target_position = 0;
@@ -87,11 +86,6 @@ void serial_write_int(int val){
   Serial.write(highByte(val));
 }
 
-// TODO
-void ping(int message){
-  serial_write_int(slave_number);
-}
-
 // -------------------------------
 // MAIN
 // -------------------------------
@@ -121,6 +115,8 @@ void setup(){
   digitalWrite(motor_pins.left, 0);
   digitalWrite(motor_pins.right, 0);
   digitalWrite(motor_pins.enable, 1);
+
+  //blink leds
   digitalWrite(pin_led1, 1);
   digitalWrite(pin_led2, 1);
   delay(500);
@@ -131,55 +127,56 @@ void setup(){
 
 void loop()
 {
-  // check if master has set priming signal to high (edge detection)
+
+
   //prime signal tells Slave to send or receive data on the serial bus
   int prime_state = digitalRead(pin_prime);
+  // check if master has set priming signal to high (edge detection)
   if (prime_state == 1 && last_prime_state == 0){
-//show that priming is active
-      digitalWrite(pin_led1, 1);
+    //show that priming is active
+    digitalWrite(pin_led1, 1);
+    //clear serial buffer
+    serial_clear();
+    //send ready signal
+    serial_write_int(slave_number);
+    //wait for command pacckage from master
+    while (Serial.available() == 0) {
+      delayMicroseconds(50);
+      //TODO implement Timout!
+    }
+    //read command bytes from Serial
+    int command = serial_read_int();
+    //read data bytes from serial
+    int data = serial_read_int();
 
-       //clear serial buffer
-        serial_clear();
-        //send ready signal
-        serial_write_int(slave_number);
-
-        //wait for command pacckage from master
-        while (Serial.available() == 0) {
-          delayMicroseconds(50);
-          //TODO implement Timout!
-        }
-        //read command bytes from Serial
-        int command = serial_read_int();
-        //read data bytes from serial
-        int data = serial_read_int();
-
-        //execute command
-        switch (command) {
-          case 0:
-          ping(data);
-          // case 1:
-          // //TODO home
-          // case 5:
-          // // set_pid_state
-          // case 6:
-          // //get_position
-          // case 10:
-          // //drive_dist
-          // case 11:
-          // //drive_dist_max
-          // case 12:
-          // //drive_to
-          // default:
-          // //Error!
-        }
+    //execute command
+    switch (command) {
+      case 0:
+      //command: ping, echo received data
+      serial_write_int(data);
+      // case 1:
+      // //TODO home
+      // case 5:
+      // // set_pid_state
+      // case 6:
+      // //get_position
+      // case 10:
+      // //drive_dist
+      // case 11:
+      // //drive_dist_max
+      // case 12:
+      // //drive_to
+      // default:
+      //Error!
+    }
 
     //show that priming and command execution has ended
     digitalWrite(pin_led1, 0);
-    }
+  }
   last_prime_state=prime_state; //necessary for edge detection
 
-// set target position to value receaved during priming, uses edge detection
-int fire_state = digitalRead(pin_fire);
+  // set target position to value receaved during priming, uses edge detection
+  int fire_state = digitalRead(pin_fire);
   if (fire_state == 1 && last_fire_state == 0) {
     target_position = next_position;
   }
