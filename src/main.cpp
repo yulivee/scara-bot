@@ -18,6 +18,15 @@ volatile int flag_1 = 0; //direction flag
 volatile word next_position = 0;
 volatile bool last_prime_state = 0;
 volatile bool last_fire_state = 0;
+enum Command {
+  c_ping = 0,
+  c_home = 1,
+  c_set_pid_state = 5,
+  c_get_position = 6,
+  c_drive_dist = 10,
+  c_drive_dist_max = 11,
+  c_drive_to = 12
+};
 
 // -------------------------------
 //PINOUT:
@@ -45,12 +54,12 @@ struct pins motor_pins = { 10, 11, 4, 2, 3 }; //struct pins { int left; int righ
 //         target_position = motor_cnt;
 // }
 //
-// void toggle_motor_cb ( const std_msgs::Empty& toggle_msg ) {
-//     target_position = motor_cnt;
-//     digitalWrite(motor_pins.left, 0);
-//     digitalWrite(motor_pins.right, 0);
-//     digitalWrite(motor_pins.enable, !digitalRead(motor_pins.enable));
-// }
+void set_pid_state ( bool motor_state ) {
+  target_position = motor_cnt;
+  digitalWrite(motor_pins.left, 0);
+  digitalWrite(motor_pins.right, 0);
+  digitalWrite(motor_pins.enable, motor_state);
+}
 
 // -------------------------------
 //FUNCTIONS
@@ -145,29 +154,50 @@ void loop()
       //TODO implement Timout!
     }
     //read command bytes from Serial
-    int command = serial_read_int();
+    Command command = (Command)serial_read_int();
     //read data bytes from serial
     int data = serial_read_int();
 
     //execute command
     switch (command) {
-      case 0:
-      //command: ping, echo received data
+      case c_ping:       //echo received data to bus
       serial_write_int(data);
-      // case 1:
-      // //TODO home
-      // case 5:
-      // // set_pid_state
-      // case 6:
-      // //get_position
-      // case 10:
-      // //drive_dist
-      // case 11:
-      // //drive_dist_max
-      // case 12:
-      // //drive_to
-      // default:
+      break;
+
+      case c_home:      // set current position as home, by zeroing counters
+      motor_cnt= 0;
+      next_position = 0;
+      target_position = 0;
+      break;
+
+      case c_set_pid_state: // set state of the PID
+      if (data == 1) {
+        set_pid_state(true);
+      }else{
+        set_pid_state(false);
+      }
+      break;
+
+      case c_get_position:  // send current position to bus
+      serial_write_int(motor_cnt);
+      break;
+
+      case c_drive_dist:  // prepare to increment the target position by received ammount
+      next_position=target_position + data;
+      break;
+
+      case c_drive_dist_max: // set target position to actual pSosition incremented by received data (asynchronous drive!)
+      next_position = motor_cnt + data;
+      target_position = next_position;
+      break;
+
+      case c_drive_to:  // set the next position
+      next_position = data;
+      break;
+
+      default:
       //Error!
+      break;
     }
 
     //show that priming and command execution has ended
