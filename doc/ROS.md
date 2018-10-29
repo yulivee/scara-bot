@@ -26,5 +26,18 @@ rostopic echo wheel_encoder_clicks
  home          | std\_msgs/Empty | Set current position as new zero          | `rostopic pub home std_msgs/Empty --once`
  drive\_dist   | std\_msgs/Int32 | Drive <n> encoder clicks                  | `rostopic pub drive_dist std_msgs/Int32 --once -- <n>`
  drive\_to     | std\_msgs/Int32 | Drive until encoder click <n> is reached  | `rostopic pub drive_to std_msgs/Int32 --once -- <n>`
+ DriveDist     | std\_msgs/Int16MultiArray | Drive <n> encoder clicks        | `rostopic pub DriveDist std\_msgs/Int16MultiArray --once "$(cat testmsg)"`
+
+testmsg:
+```
+layout:
+  dim:
+  -
+    label: DriveDist
+    size: 7
+    stride: 1
+  data_offset: 0
+data: [0, 1, 2, 3, 4, 5, 6 ]
+```
 
      
