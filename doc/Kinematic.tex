@@ -54,12 +54,63 @@
 \section{Armteile}
 
 \begin{align*}
-    a_1 &= a_1 & \alpha_1 &= 0^\circ \\
-    a_2 &= 0   & \alpha_2 &= 0^\circ \\
-    a_3 &= 0   & \alpha_3 &= 0^\circ \\
-    a_4 &= 0   & \alpha_4 &= 90^\circ \\
-    a_5 &= 0   & \alpha_5 &= 90^\circ \\
-    a_6 &= 0   & \alpha_6 &= 0^\circ \\
+    a_1 &= 0     & \alpha_1 &= 0^\circ \\
+    a_2 &= 255mm & \alpha_2 &= 0^\circ \\
+    a_3 &= 255mm & \alpha_3 &= 0^\circ \\
+    a_4 &= 0     & \alpha_4 &= 90^\circ \\
+    a_5 &= 0     & \alpha_5 &= 90^\circ \\
+    a_6 &= 175mm & \alpha_6 &= 0^\circ \\
 \end{align*}
  
+\section{Denavit-Hardenberg Matrix}
+\begin{align*}
+{}^0 A_1 &=
+\begin{pmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 1 & d_1 \\
+    0 & 0 & 0 & 0 \\
+\end{pmatrix} \\
+\\
+{}^1 A_2 &=
+\begin{pmatrix}
+    cos\theta_2 & -sin\theta_2 & 0 & a_2~cos\theta_2 \\
+    sin\theta_2 & cos\theta_2 & 0 & a_2~cos\theta_2 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1 \\
+\end{pmatrix} \\
+\\
+{}^2 A_3 &=
+\begin{pmatrix}
+    cos\theta_3 & -sin\theta_3 & 0 & a_3~cos\theta_3 \\
+    sin\theta_3 & cos\theta_3 & 0 & a_3~cos\theta_3 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1 \\
+\end{pmatrix} \\
+\\
+{}^3 A_4 &=
+\begin{pmatrix}
+    cos\theta_4 & 0 & sin\theta_4 & 0 \\
+    sin\theta_4 & 0 & -cos\theta_4 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 1 \\
+\end{pmatrix} \\
+\\
+{}^4 A_5 &=
+\begin{pmatrix}
+    cos\theta_5 & 0 & sin\theta_5 & 0 \\
+    sin\theta_5 & 0 & -cos\theta_5 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 1 \\
+\end{pmatrix} \\
+\\
+{}^5 A_6 &=
+\begin{pmatrix}
+    cos\theta_6 & -sin\theta_6 & 0 & a_6~cos\theta_6 \\
+    sin\theta_6 & cos\theta_6 & 0 & a_6~cos\theta_6 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1 \\
+\end{pmatrix} \\
+\end{align*}
+
 \end{document}
