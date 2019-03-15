@@ -11,45 +11,54 @@
 
 -----------------------------------------------------------------------------
 
-   
+
 <a name="axis_def" href="#"></a>
 ### Axis Definition
 
-| Axis Name     | Function      | Cool  |
-| ------------- |:-------------:| -----:|
-| SHOULDER | oberstes Armgelenk |
-|UAJ        |U Arm Yaw       |    |
-|UAE        |U Arm Ellbow       |    |
-|SKE	|S K Ellbow       |    |
-|SKF |S K F       |    |
-|SKG |S K Gripper       |    |
+| Axis Name     | Function      |
+| ------------- |:-------------:|
+| SHOULDER      | oberstes Armgelenk |
+|UAJ            |U Arm Yaw          |
+|SKE	          |S K Ellbow         |
+|UAE            |U Arm Ellbow       |
+|SKF            |S K F              |
+|SKG            |S K Gripper        |
 
 <a name="pin_ls" href="#"></a>
 ### Pins für die Lichtschranken
-    
+
 | Teil   | Flachstecker | Arduino |
-| ------------- |:-------------:| -----:|
- Shoulder |     25/26    |  18/19
-   UAJ    |     23/24    |  
-   UAE	  |     27/28    |  
-   SKE	  |     19/20    |  
-   SKF    |     21/22    |  
-   SKG 	  |     29/30    |  
+| ------------- |:-------------:| -----:
+| Shoulder      |     25/26    |  18/19 |
+|   UAJ         |     23/24    |  ?|
+|   UAE	        |     27/28    |  ?|
+|   SKE	        |     19/20    |  ?|
+|   SKF         |     21/22    |  ?|
+|   SKG 	      |     29/30    |  ?|
+
+<a name="anschluss_ls" href="#"></a>
+### Anschluss an die Lichtschranken
+| Farbe | Funktion |
+|-------|----------|
+| grau | - |
+| orange | + |
+| weis | schranke 1 |
+| gelb | schranke 2 |
 
 <a name="pin_motor" href="#"></a>
 ### Pinout an Motorplatine
 
 Pin 1 ist der am nächsten zum Motor
 
-|  Pin |  NAME  | Farbe   | Funktion
-| ---- | ------ | ------- | :--------- 
-  1   | `M_VCC`  | Rot     | Motor +24V
-  2   | `M_GND`  | Schwarz | Motor GND 
-  3   | `L_VCC`  | Orange  | Lichtschranke +5V (über Widerstand mit LS Ausgang verbunden)
-  4   | `L_OUT1` | Weiß    | Ausgang LS 1
-  5   | `L_GND`  | Grau    | Lichtschranke GND
-  6   | `L_OUT2` | Gelb    | Ausgang LS 2
-  
+|  Pin |  NAME  | Farbe   | Funktion|
+| ---- | ------ | ------- | :---------|
+|  1   | `M_VCC`  | Rot     | Motor +24V|
+|  2   | `M_GND`  | Schwarz | Motor GND|
+|  3   | `L_VCC`  | Orange  | Lichtschranke +5V (über Widerstand mit LS Ausgang verbunden)|
+|  4   | `L_OUT1` | Weiß    | Ausgang LS 1|
+|  5   | `L_GND`  | Grau    | Lichtschranke GND|
+|  6   | `L_OUT2` | Gelb    | Ausgang LS 2|
+
 <a name="kabel_motor" href="#"></a>
 ### Kabelbelegung der einzelnen Motoren
 | Farbe    | Name     | UAJ   | SKG   | SKF   | SKE   | Shoulder | UAE   | Z     |
@@ -66,16 +75,16 @@ Pin 1 ist der am nächsten zum Motor
 ### Anschluss an die H-Bridges
 | Funktion | Arduino-Pin | H-Bridge links | H-Bridge rechts | Farbe |
 | -------- | :---------: | :------------: | :-------------: | :---: |
-| Left     | D10         | IN4            | IN2             |
-| Right    | D11         | IN3            | IN1             |
-| Enable   | D4          | ENB            | ENA             |
-| CNT0     | D2          |                |                 | Weiß
-| CNT1     | D3          |                |                 | Gelb
+| Left     | D10         | IN4            | IN2             |       |
+| Right    | D11         | IN3            | IN1             |       |
+| Enable   | D4          | ENB            | ENA             |       |
+| CNT0     | D2          |                |                 | Weiß  |
+| CNT1     | D3          |                |                 | Gelb  |
 
 <a name="pin_stecker" href="#"></a>
 ### Pinout Flachstecker Scara-Bot
 | Pin  |   Name	 |   Color	|  Arm
-| ---- | ------ | ------- | :--------- 
+| ---- | ------ | ------- | :---------
 | 01	| `M_GND_SKE`    |    Black	| AL SKE
 | 02	| `M_VCC_SKE`    |    Red		| AL SKE
 | 03	| `M_GND_SKF`    |    Black	| AL SKF
@@ -89,7 +98,7 @@ Pin 1 ist der am nächsten zum Motor
 | 11      | `M_GND_SKG`    |  Black	| AL SKG
 | 12      | `M_VCC_SKG`    |  Red		| AL SKG
 | 13      | `L_VCC_*` |          Orange	|AL SKE               
-| 14      | `L_VCC_*` |          Orange	|SHOULDER / UAJ / UAE / AL SKG (Grün) 
+| 14      | `L_VCC_*` |          Orange	|SHOULDER / UAJ / UAE / AL SKG (Grün)
 | 15      | `L_VCC_*` |          Orange	|SHOULDER / UAJ / UAE / AL SKG (Grün)
 | 16      | `L_GND_*` |          Gray        |SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
 | 17      | `L_GND_*` |          Gray	|SHOULDER / UAJ / UAE / AL SKG (Blau) / AL SKE / AL SKF
@@ -129,4 +138,3 @@ Pin 1 ist der am nächsten zum Motor
 <a name="interrupt" href="#"></a>
 ### Arduino Interrupt-Pins
 2, 3, 18, 19, 20, 21
-

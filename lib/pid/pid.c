@@ -1,3 +1,9 @@
+// --------------------------------------
+// Name: pid.c
+// Project: scara-bot
+// Description: implementation of PID controller
+//---------------------------------------
+
 #include <pins.h>
 #include <pid.h>
 #include <avr/io.h>

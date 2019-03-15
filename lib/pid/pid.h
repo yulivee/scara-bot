@@ -1,3 +1,9 @@
+// --------------------------------------
+// Name: pid.h
+// Project: scara-bot
+// Description: header file for pid.c, definition of constants
+//---------------------------------------
+
 #ifndef PID_H_INCLUDED
 #define PID_H_INCLUDED
 
@@ -19,7 +25,7 @@ extern "C" {
 //function to check if a value is in bounds
 #define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
 
-//function declarations:    
+//function declarations:
 void timer_init();
 
 #ifdef __cplusplus

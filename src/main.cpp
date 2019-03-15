@@ -1,3 +1,9 @@
+// --------------------------------------
+// Name: main.cpp
+// Project: scara-bot
+// Description: main function for the arduino nano slaves on the multiserial bus
+//---------------------------------------
+
 #include <Arduino.h>
 //#include <std_msgs/Int32.h>
 //#include <std_msgs/Empty.h>

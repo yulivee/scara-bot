@@ -1,3 +1,9 @@
+// --------------------------------------
+// Name: pins.h
+// Project: scara-bot
+// Description: definition of motor pin variables
+//---------------------------------------
+
 #ifndef PINS_H_INCLUDED
 #define PINS_H_INCLUDED
 
