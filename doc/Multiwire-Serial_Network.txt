@@ -12,3 +12,17 @@ Signalleitungen von einem einzelnen Master Ausgang zu allen Slaves: (Sternvertei
   - Master RX1 (empfangen) --> Slaves TX0 (senden)
 
   GND muss im gesamten Netzwerk verbunden sein.
+
+Das oben beschribene Netzwerk ähnelt einer SPI Communiacation ohne Serial Clock
+
+Serial Peripheral Interface:
+This is a synchronous type serial communication protocol which consists of two data lines (MOSI and MISO), one clock line (SCK) and a slave select line (SS).
+Master – Device which provides clock for communication
+Slave – Device other than master which utilises master’s clock to communicate
+MOSI – Master Out Salve In (line though which master sends data to its slaves)
+MISO – Master In Slave Out (line though which salves responds back to the master)
+SCK – Serial Clock (clock provided by master device)
+SS – Slave Select (line used to select slave to which master wants to communicate)
+
+In a SPI, at any given time there could be only one master device and several other slaves under it who only respond to master’s call. The entire communication is handled by master itself; no slave can send data on its own will. Master sends data via MOSI while slaves respond via MISO line. In the entire process SCK (serial clock) plays a very important role, every slave device depends on this clock to read data from MOSI and respond through MISO. SS (slave select) is used to make a particular slave awake with who master wants to communicate.
+https://www.engineersgarage.com/blogs/comparison-between-serial-communication-protocols-spi-i2c-uartusrt-0
