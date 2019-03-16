@@ -1,7 +1,8 @@
 ##### Table of Contents
 
 [Axis Definition](#axis_def)  
-[Pins für die Lichtschranken](#pin_ls)  
+[Pins für die Lichtschranken](#pin_ls)
+[Anschluss an die Lichtschranken](#anschluss_ls)  
 [Pinout an Motorplatine](#pin_motor)  
 [Kabelbelegung der einzelnen Motoren](#kabel_motor)  
 [Anschluss an die H-Bridges](#anschluss_hb)  
@@ -15,14 +16,17 @@
 <a name="axis_def" href="#"></a>
 ### Axis Definition
 
-| Axis Name     | Function      |
-| ------------- |:-------------:|
-| SHOULDER      | oberstes Armgelenk |
-|UAJ            |U Arm Yaw          |
-|SKE	          |S K Ellbow         |
-|UAE            |U Arm Ellbow       |
-|SKF            |S K F              |
-|SKG            |S K Gripper        |
+| Axis Name     | Function      | Joint Number |
+| ------------- |:-------------:|:------------:|
+| Z             |vertikale Linearachse|1|
+| SHOULDER      |oberstes Armgelenk |2|
+|UAJ            |U Arm Yaw          |3|
+|SKE	          |S K Ellbow         |4|
+|UAE            |U Arm Ellbow       |5|
+|SKF            |S K F              |6|
+|SKG            |S K Gripper        |7|
+
+Joint number is also the number given for the Arduino slave unit for that joint.
 
 <a name="pin_ls" href="#"></a>
 ### Pins für die Lichtschranken
