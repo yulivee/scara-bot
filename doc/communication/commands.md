@@ -3,13 +3,13 @@
 
 |Command Name|Command Code|Command Data|Requested Data|Slave Function|
 |:-:|:-:|:-:|:-:|:--|
-|ping           |0  |`data`     |`data` |Echo `data` back to master  |
-|home           |1  |0       |0              |Set current position to zero |
-|set_pid_state  |5  |`state`    |0              |Set PID to ON or OFF |
-|get_position   |6  |0       |`motor_count`  |/  |
-|drive_dist     |10 |`distance` |0              |Change target position by `distance` |
-|drive_dist_max |11 |`distance` |0              |Move joint by `distance` from current position |
-|drive_to       |12 |`position` |0              |Move joint to position |
+|ping_slave     |0  |`ping`     |`echo`         |Echo `data` back to master  |
+|home           |1  |/          |/              |Set current position to zero |
+|set_pid_state  |5  |`state`    |/              |Set PID to ON or OFF |
+|get_position   |6  |/          |`motor_count`  |Send current position to master  |
+|drive_dist     |10 |`distance` |/              |Change target position by `distance` |
+|drive_dist_max |11 |`distance` |/              |Move joint by `distance` from current position |
+|drive_to       |12 |`position` |/              |Move joint to position |
 
 Expected Values:  
 - `slave_number`: 1-7

@@ -1,0 +1,4 @@
+typecast Boolean: https://forum.arduino.cc/index.php?topic=98270.0
+Returning an int array from a function: https://forum.arduino.cc/index.php?topic=42934.0
+not implemente way of returning array: https://arduino.stackexchange.com/questions/30205/returning-an-int-array-from-a-function
+nit implemented, Arduino function with optional argument(s):http://ediy.com.my/index.php/tutorials/item/95-arduino-function-with-optional-arguments

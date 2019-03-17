@@ -37,11 +37,8 @@ enum Command {
 // -------------------------------
 //PINOUT:
 // -------------------------------
-volatile int pin_fire = 6;  //Input: sets target position to next position, normal LOW
-int debug_pin = 8;
-volatile int pin_prime = 9; //Input: lets slave use the serial bus, normal LOW, private slave signal
-volatile int pin_led1 = 13; //Output: onboard LED
-volatile int pin_led2 = 12; //Output: offboard LED
+volatile int ss_pin = 9; //Slave Select pin, Input: lets slave use the serial bus, normal LOW, private slave signal
+volatile int led_pin = 13; //Output: onboard LED
 struct pins motor_pins = { 10, 11, 4, 2, 3 }; //struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 
 // commented out for use as templae for needed functions
@@ -120,11 +117,8 @@ void setup(){
   pinMode(motor_pins.enable, OUTPUT);
   pinMode(motor_pins.left, OUTPUT);
   pinMode(motor_pins.right, OUTPUT);
-  pinMode(pin_fire, INPUT);
-  pinMode(pin_prime, INPUT);
-  pinMode(pin_led1, OUTPUT);
-  pinMode(pin_led2, OUTPUT);
-  pinMode(debug_pin, OUTPUT);
+  pinMode(ss_pin, INPUT);
+  pinMode(led_pin, OUTPUT);
 
   //make sure all motors are off, activate drivers are active
   digitalWrite(motor_pins.left, 0);
@@ -132,12 +126,9 @@ void setup(){
   digitalWrite(motor_pins.enable, 1);
 
   //blink leds
-  digitalWrite(pin_led1, 1);
-  digitalWrite(pin_led2, 1);
+  digitalWrite(led_pin, 1);
   delay(500);
-  digitalWrite(pin_led1, 0);
-  digitalWrite(pin_led2, 0);
-  digitalWrite(debug_pin, 0);
+  digitalWrite(led_pin, 0);
 }
 
 void loop()
@@ -145,11 +136,11 @@ void loop()
 
 
   //prime signal tells Slave to send or receive data on the serial bus
-  int prime_state = digitalRead(pin_prime);
+  int prime_state = digitalRead(ss_pin);
   // check if master has set priming signal to high (edge detection)
   if (prime_state == 1 && last_prime_state == 0){
     //show that priming is active
-    digitalWrite(pin_led1, 1);
+    digitalWrite(led_pin, 1);
     //clear serial buffer
     serial_clear();
     //send ready signal
@@ -161,12 +152,12 @@ void loop()
     }
     //read command bytes from Serial
     Command command = (Command)serial_read_int();
-    //read data bytes from serial
-    int data = serial_read_int();
-
     //execute command
+    int data;
     switch (command) {
       case c_ping:       //echo received data to bus
+      //read data bytes from serial
+      data = serial_read_int();
       serial_write_int(data);
       break;
 
@@ -177,6 +168,7 @@ void loop()
       break;
 
       case c_set_pid_state: // set state of the PID
+      data = serial_read_int();
       if (data == 1) {
         set_pid_state(true);
       }else{
@@ -189,15 +181,17 @@ void loop()
       break;
 
       case c_drive_dist:  // prepare to increment the target position by received ammount
+      data = serial_read_int();
       next_position=target_position + data;
       break;
 
       case c_drive_dist_max: // set target position to actual pSosition incremented by received data (asynchronous drive!)
+      data = serial_read_int();
       next_position = motor_cnt + data;
-      target_position = next_position;
       break;
 
       case c_drive_to:  // set the next position
+      data = serial_read_int();
       next_position = data;
       break;
 
@@ -207,15 +201,8 @@ void loop()
     }
 
     //show that priming and command execution has ended
-    digitalWrite(pin_led1, 0);
-  }
-  last_prime_state=prime_state; //necessary for edge detection
-
-  // set target position to value receaved during priming, uses edge detection
-  int fire_state = digitalRead(pin_fire);
-  if (fire_state == 1 && last_fire_state == 0) {
+    digitalWrite(led_pin, 0);
     target_position = next_position;
   }
-  last_fire_state = fire_state; //necessary for edge detection
-
+  last_prime_state=prime_state; //necessary for edge detection
 }
