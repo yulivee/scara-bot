@@ -14,7 +14,7 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-const int slave_number = 1;
+const int slave_number = 2;
 
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0; //PID variables
@@ -37,7 +37,7 @@ enum Command {
 // -------------------------------
 //PINOUT:
 // -------------------------------
-volatile int ss_pin = 9; //Slave Select pin, Input: lets slave use the serial bus, normal LOW, private slave signal
+volatile int ss_pin = 12; //Slave Select pin, Input: lets slave use the serial bus, normal LOW, private slave signal
 volatile int led_pin = 13; //Output: onboard LED
 struct pins motor_pins = { 10, 11, 4, 2, 3 }; //struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 
