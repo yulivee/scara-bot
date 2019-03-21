@@ -16,7 +16,7 @@ extern "C" {
 struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 extern struct pins motor_pins;
 extern volatile int motor_cnt;
-extern volatile int target_position;
+extern int target_position;
 extern volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt;
 
 #ifdef __cplusplus

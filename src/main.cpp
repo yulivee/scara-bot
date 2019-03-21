@@ -18,17 +18,17 @@ const int slave_number = 2;
 
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt = 0; //PID variables
-volatile int target_position = 0;
+int target_position = 0;
 volatile int flag_0 = 0; //direction flag
 volatile int flag_1 = 0; //direction flag
-volatile word next_position = 0;
-volatile bool last_prime_state = 0;
-volatile bool last_fire_state = 0;
+bool last_prime_state = 0;
+bool last_fire_state = 0;
 enum Command {
   c_ping = 0,
   c_home = 1,
   c_set_pid_state = 5,
   c_get_position = 6,
+  c_get_target =7,
   c_drive_dist = 10,
   c_drive_dist_max = 11,
   c_drive_to = 12
@@ -163,7 +163,6 @@ void loop()
 
       case c_home:      // set current position as home, by zeroing counters
       motor_cnt= 0;
-      next_position = 0;
       target_position = 0;
       break;
 
@@ -180,19 +179,23 @@ void loop()
       serial_write_int(motor_cnt);
       break;
 
+      case c_get_target:  // send current target to bus
+      serial_write_int(target_position);
+      break;
+
       case c_drive_dist:  // prepare to increment the target position by received ammount
       data = serial_read_int();
-      next_position=target_position + data;
+      target_position=target_position + data;
       break;
 
       case c_drive_dist_max: // set target position to actual pSosition incremented by received data (asynchronous drive!)
       data = serial_read_int();
-      next_position = motor_cnt + data;
+      target_position = motor_cnt + data;
       break;
 
       case c_drive_to:  // set the next position
       data = serial_read_int();
-      next_position = data;
+      target_position = data;
       break;
 
       default:
@@ -202,7 +205,6 @@ void loop()
 
     //show that priming and command execution has ended
     digitalWrite(led_pin, 0);
-    target_position = next_position;
   }
   last_prime_state=prime_state; //necessary for edge detection
 }

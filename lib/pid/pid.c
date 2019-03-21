@@ -8,6 +8,7 @@
 #include <pid.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <Arduino.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,9 +40,9 @@ ISR(TIMER0_COMPA_vect) {
         positionSpeed = 0;
     } else {
         //caluclate speed with PID control
-        positionSpeed = positionDelta * MOVEP + positionInt * MOVEI + positionDiff * MOVED;
+      positionSpeed = positionDelta * MOVEP + positionInt * MOVEI + positionDiff * MOVED;
+      BOUNDS ( positionSpeed , MOVEMAX );
     }
-    BOUNDS ( positionSpeed , MOVEMAX );
 
     //set Motors with speed value
     if ( positionSpeed >= 0 ) {
