@@ -17,7 +17,8 @@ struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 extern struct pins motor_pins;
 extern volatile int motor_cnt;
 extern int target_position;
-extern volatile int positionDelta, positionSpeed, positionLastDelta, positionDiff, positionInt;
+extern volatile long positionSpeed;
+extern volatile int positionDelta, positionLastDelta, positionDiff, positionInt;
 
 #ifdef __cplusplus
 }
