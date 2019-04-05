@@ -22,6 +22,10 @@ extern "C" {
 #define MOVEMAX 255
 #define MOVEIMAX 100
 #define GOVERNOR_FREQ 100
+
+// Max cap for delta value to avoid variable overflow
+#define MOVEDELTAMAX 255
+
 //function to check if a value is in bounds
 #define BOUNDS(var, max) if ((var)>(max)) (var)=(max); if ( (var)<-(max)) (var)=-(max);
 
