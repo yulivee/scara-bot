@@ -8,6 +8,7 @@
 |set_pid_state  |5  |`state`    |/              |Set PID to ON or OFF |
 |get_position   |6  |/          |`motor_count`  |Send current position to master  |
 |get_target   |7  |/          |`target_position`  |Send target position to master  |
+|get_slave_num|8|/|`slave_number`|Debug fuction|
 |drive_dist     |10 |`distance` |/              |Change target position by `distance` |
 |drive_dist_max |11 |`distance` |/              |Move joint by `distance` from current position |
 |drive_to       |12 |`position` |/              |Move joint to position |

@@ -30,6 +30,7 @@ enum Command {
   c_set_pid_state = 5,
   c_get_position = 6,
   c_get_target =7,
+  c_get_slave_num =8,
   c_drive_dist = 10,
   c_drive_dist_max = 11,
   c_drive_to = 12
@@ -182,6 +183,10 @@ void loop()
 
       case c_get_target:  // send current target to bus
       serial_write_int(target_position);
+      break;
+
+      case c_get_slave_num:
+      serial_write_int(slave_number);
       break;
 
       case c_drive_dist:  // prepare to increment the target position by received ammount
