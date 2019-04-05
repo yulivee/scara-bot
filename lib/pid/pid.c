@@ -35,6 +35,7 @@ ISR(TIMER0_COMPA_vect) {
     positionLastDelta = positionDelta;
     positionInt += positionDelta;
     BOUNDS ( positionInt , MOVEIMAX );
+    BOUNDS ( positionDelta, MOVEDELTAMAX );
 
     if ( target_position == motor_cnt ) {
         positionSpeed = 0;
