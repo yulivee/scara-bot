@@ -31,11 +31,12 @@ ISR(TIMER0_COMPA_vect) {
 
     //calculate values for PID controller
     positionDelta = target_position - motor_cnt;
+    BOUNDS ( positionDelta, MOVEDELTAMAX );
     positionDiff = positionDelta - positionLastDelta;
     positionLastDelta = positionDelta;
     positionInt += positionDelta;
     BOUNDS ( positionInt , MOVEIMAX );
-    BOUNDS ( positionDelta, MOVEDELTAMAX );
+
 
     if ( target_position == motor_cnt ) {
         positionSpeed = 0;

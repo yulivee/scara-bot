@@ -14,10 +14,10 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-const int slave_number = 4;
+const int slave_number = 1;
 
 volatile int motor_cnt = 0; //position the motor ist at
-volatile long positionSpeed = 0L;
+volatile int positionSpeed = 0;
 volatile int positionDelta, positionLastDelta, positionDiff, positionInt = 0; //PID variables
 int target_position = 0;
 volatile int flag_0 = 0; //direction flag
