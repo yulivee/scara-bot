@@ -1,3 +1,4 @@
+
 // --------------------------------------
 // Name: main.cpp
 // Project: scara-bot
@@ -14,7 +15,7 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-const int slave_number = 1;
+const int slave_number = 6;
 
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionSpeed = 0;
@@ -34,6 +35,16 @@ enum Command {
   c_drive_dist = 10,
   c_drive_dist_max = 11,
   c_drive_to = 12
+};
+
+//possible errors
+enum Errortype {
+  no_error = 0,
+  e_wrong_slave = 91,
+  e_ping_bad_echo = 92,
+  e_unknown_command = 93,
+  e_bad_data = 94,
+  default_value = 99
 };
 
 // -------------------------------
@@ -154,61 +165,74 @@ void loop()
     }
     //read command bytes from Serial
     Command command = (Command)serial_read_int();
+
+    int data; //variable for holding data from the master
+    int return_data = default_value; //variable for answering data to master
+
+    //echo command number unless an error ocurrs
+    return_data = command;
+
     //execute command
-    int data;
     switch (command) {
       case c_ping:       //echo received data to bus
       //read data bytes from serial
       data = serial_read_int();
-      serial_write_int(data);
+      return_data = data;
       break;
 
       case c_home:      // set current position as home, by zeroing counters
+      set_pid_state(false);
       motor_cnt= 0;
       target_position = 0;
+      set_pid_state(true);
       break;
 
       case c_set_pid_state: // set state of the PID
       data = serial_read_int();
       if (data == 1) {
         set_pid_state(true);
-      }else{
+      }else if (data == 0) {
         set_pid_state(false);
+      }else{
+        return_data=e_bad_data;
       }
       break;
 
       case c_get_position:  // send current position to bus
-      serial_write_int(motor_cnt);
+      return_data = motor_cnt;
       break;
 
       case c_get_target:  // send current target to bus
-      serial_write_int(target_position);
+      return_data = target_position;
       break;
 
       case c_get_slave_num:
-      serial_write_int(slave_number);
+      return_data = slave_number;
       break;
 
       case c_drive_dist:  // prepare to increment the target position by received ammount
       data = serial_read_int();
       target_position=target_position + data;
+      return_data = target_position;
       break;
 
       case c_drive_dist_max: // set target position to actual pSosition incremented by received data (asynchronous drive!)
       data = serial_read_int();
       target_position = motor_cnt + data;
+      return_data = target_position;
       break;
 
       case c_drive_to:  // set the next position
       data = serial_read_int();
       target_position = data;
+      return_data = target_position;
       break;
 
       default:
-      //Error!
+      return_data = e_unknown_command;
       break;
     }
-
+    serial_write_int(return_data);
     //show that priming and command execution has ended
     digitalWrite(led_pin, 0);
   }
