@@ -15,7 +15,7 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-const int slave_number = 6;
+const int slave_number = 1;
 
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionSpeed = 0;
@@ -25,27 +25,32 @@ volatile int flag_0 = 0; //direction flag
 volatile int flag_1 = 0; //direction flag
 bool last_prime_state = 0;
 bool last_fire_state = 0;
+volatile int speed = 100; //speed in %
+volatile int zone = 5;  //fly-by distance to point in clicks
+
 enum Command {
   c_ping = 0,
   c_home = 1,
-  c_set_pid_state = 5,
+  c_set_pid_state = 2,
   c_get_position = 6,
-  c_get_target =7,
+  c_get_target = 7,
   c_get_slave_num =8,
   c_drive_dist = 10,
   c_drive_dist_max = 11,
-  c_drive_to = 12
+  c_drive_to = 12,
+  c_set_speed = 15,
+  c_set_zone = 16,
+  c_check_target_reached = 20
 };
 
 //possible errors
 enum Errortype {
   no_error = 0,
-  command_offs =100,
-  e_wrong_slave = 910,
-  e_ping_bad_echo = 920,
-  e_unknown_command = 930,
-  e_bad_data = 940,
-  default_value = 990
+  e_wrong_slave = 91,
+  e_ping_bad_echo = 92,
+  e_unknown_command = 93,
+  e_bad_data = 94,
+  default_value = 99
 };
 
 // -------------------------------
@@ -55,22 +60,11 @@ volatile int ss_pin = 12; //Slave Select pin, Input: lets slave use the serial b
 volatile int led_pin = 13; //Output: onboard LED
 struct pins motor_pins = { 10, 11, 4, 2, 3 }; //struct pins { int left; int right; int enable; int cnt0; int cnt1; };
 
-// commented out for use as templae for needed functions
-//
-// callback functions for Ros Subscribers
-// void drive_dist_cb ( const std_msgs::Int32& clicks ) {
-//         target_position += clicks.data;
-// }
-//
-// void drive_to_cb ( const std_msgs::Int32& clicks ) {
-//         target_position = clicks.data;
-// }
-//
-// void home_cb ( const std_msgs::Empty& toggle_msg ) {
-//         motor_cnt = 0;
-//         target_position = motor_cnt;
-// }
-//
+// -------------------------------
+//PID FUNCTIONS
+// -------------------------------
+
+//turn PID on or off
 void set_pid_state ( bool motor_state ) {
   target_position = motor_cnt;
   digitalWrite(motor_pins.left, 0);
@@ -78,9 +72,6 @@ void set_pid_state ( bool motor_state ) {
   digitalWrite(motor_pins.enable, motor_state);
 }
 
-// -------------------------------
-//FUNCTIONS
-// -------------------------------
 //count encoder steps function for interrupt
 void count_encoder(){
   flag_0 = digitalRead(motor_pins.cnt0);
@@ -91,6 +82,10 @@ void count_encoder(){
     motor_cnt--;
   }
 }
+
+// -------------------------------
+//SERIAL FUNCTIONS
+// -------------------------------
 
 //clear serial input buffer
 void serial_clear(){
@@ -113,10 +108,10 @@ void serial_write_int(int val){
 }
 
 // -------------------------------
-// MAIN
+// MAIN CODE
 // -------------------------------
 void setup(){
-  //Set the Serialport to 9600 Baud (other Bauds are possible, up to 115200)
+  //Set the Serial port to 9600 Baud for communication with Master (other Bauds are possible, up to 115200)
   Serial.begin(9600);
 
   //start interrupt for counting the encoder steps
@@ -134,7 +129,7 @@ void setup(){
   pinMode(ss_pin, INPUT);
   pinMode(led_pin, OUTPUT);
 
-  //make sure all motors are off, activate drivers are active
+  //make sure all motors are off, activate drivers
   digitalWrite(motor_pins.left, 0);
   digitalWrite(motor_pins.right, 0);
   digitalWrite(motor_pins.enable, 1);
@@ -147,37 +142,37 @@ void setup(){
 
 void loop()
 {
-
-
-  //prime signal tells Slave to send or receive data on the serial bus
+  //---------------------------------------------------------------------------
+  //PRIMING: prime signal tells Slave to send or receive data on the serial bus
   int prime_state = digitalRead(ss_pin);
   // check if master has set priming signal to high (edge detection)
   if (prime_state == 1 && last_prime_state == 0){
-    //show that priming is active
-    digitalWrite(led_pin, 1);
-    //clear serial buffer
-    serial_clear();
-    //send ready signal
-    serial_write_int(slave_number);
-    //wait for command pacckage from master
+    //---------------------------------------------------------------------------
+    //START SERIAL COMMUNICATION:
+    digitalWrite(led_pin, 1); //show that priming is active
+    serial_clear();           //clear serial buffer
+    serial_write_int(slave_number);       //send ready signal
+
+    //---------------------------------------------------------------------------
+    //RECEIVE COMMAND: wait for command pakage from master
     while (Serial.available() == 0) {
       delayMicroseconds(50);
-      //TODO implement Timout!
+      //TODO implement Timeout
     }
     //read command bytes from Serial
     Command command = (Command)serial_read_int();
 
+    //---------------------------------------------------------------------------
+    //EXECUTE COMMAND:
     int data; //variable for holding data from the master
-    //set error_code to command number (with an offset) unless an error ocurrs
-    int error_code = (command_offs+(10*command));
+    int dist_to_target; //variable for computing current distance to target
+    bool target_reached;  //result boolean for checking if target reached
+    int error_code = command; //set error_code to command number unless an error ocurrs
 
-    //execute command
     switch (command) {
       case c_ping:       //echo received data to bus
-      //read data bytes from serial
-      data = serial_read_int();
-      //echo bytes
-      serial_write_int(data);
+      data = serial_read_int(); //read data bytes from serial
+      serial_write_int(data);   //echo bytes
       break;
 
       case c_home:      // set current position as home, by zeroing counters
@@ -225,15 +220,40 @@ void loop()
       target_position = data;
       break;
 
+      case c_set_speed:  // set the axis max speed
+      data = serial_read_int();
+      if ((0 <= data) && (data <= 100)) {
+        speed = data;
+      }else{
+        error_code=e_bad_data;
+        speed = 0;
+      }
+      break;
+
+      case c_set_zone:  // set the fly-by distance
+      zone = serial_read_int();
+      break;
+
+      case c_check_target_reached:  // tell master if target position is reached (within zone)
+      dist_to_target = target_position-motor_cnt; //calculate distance to target
+      target_reached = false;
+      if ((-zone<dist_to_target) && dist_to_target<zone) { //if distance is within zone boundraries set result to true
+        target_reached = true;
+      }
+      serial_write_int((int)target_reached); //as communication only works with ints, typecast result as int
+      break;
+
       default:
       error_code = e_unknown_command;
       break;
     }
-    serial_write_int(error_code);
-    while (digitalRead(ss_pin)) {
+
+    //---------------------------------------------------------------------------
+    //END SERIAL COMMUNICATION:
+    while (digitalRead(ss_pin)) { //Wait for slave select to go LOW
     }
-    //show that priming and command execution has ended
-    digitalWrite(led_pin, 0);
+    serial_write_int(error_code); //Send error code to Master
+    digitalWrite(led_pin, 0);     //show that priming and command execution has ended
   }
   last_prime_state=prime_state; //necessary for edge detection
 }
