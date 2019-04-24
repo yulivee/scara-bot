@@ -15,7 +15,7 @@
 // -------------------------------
 // VARIABLES
 // -------------------------------
-const int slave_number = 1;
+const int slave_number = 7;
 
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionSpeed = 0;
