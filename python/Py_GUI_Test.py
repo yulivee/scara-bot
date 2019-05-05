@@ -1,28 +1,20 @@
-print ("I will now count my chickens:")
+from tkinter import *
+from tkinter import messagebox
 
-print ("Hens", 25 + 30 / 6)
-print ("Roosters", 100 - 25 * 3 % 4)
+#Gererate GUI body
+top = Tk()
+top.geometry("150x120")
 
-print ("Now I will count the eggs:")
+#Callback functions for the GUI inputs
+def ButtonCallBack():
+   msg = messagebox.showinfo( "Message:", E1.get())
 
-print (3 + 2 + 1 - 5 + 4 % 2 - 1 / 4 + 6)
+#Generate GUI elements
+L1 = Label(top, text = "Message:")
+L1.place(x = 10,y = 10)
+E1 = Entry(top, bd = 5)
+E1.place(x = 10,y = 40)
+B = Button(top, text = "Get Message", command = ButtonCallBack)
+B.place(x = 10,y = 80)
 
-print ("Is it true that 3 + 2 < 5 - 7?")
-
-print (3 + 2 < 5 - 7)
-
-print ("What is 3 + 2?", 3 + 2)
-print ("What is 5 - 7?", 5 - 7)
-
-print ("Oh, that's why it's False.")
-
-print ("How about some more.")
-
-print ("Is it greater?", 5 > -2)
-print ("Is it greater or equal?", 5 >= -2)
-print ("Is it less or equal?", 5 <= -2)
-
-print (7.0/4.0)
-print (7/4)
-print (7%4)
-print (11%4)
+top.mainloop()
