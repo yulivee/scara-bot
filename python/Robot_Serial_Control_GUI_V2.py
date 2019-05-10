@@ -90,27 +90,6 @@ def run_program():
     global last_prog_pos
     prog_running = 1
     l_running.config(bg="green",text = "running...")
-    while prog_running:
-        _prog_pos = prog_pos #make it so nothing can change this during execution
-        last_prog_pos = _prog_pos #save last program position
-        #read next command from file
-        fo = open(e_prg_file.get(), "r")
-        fo.seek(_prog_pos, 0) #go to current reading position
-        command = fo.readline()
-        prog_pos = fo.tell() # Check current position
-        fo.close() # Close opened file
-        #check if end of file was reached
-        if (command == ""):
-            prog_pos = 0
-        else:
-            #send read command from file to robot
-            msg = messagebox.showinfo("Send Command", "%r" % command)
-            send_command(command)
-            #wait for ready message (polling)
-            b = 0
-            while b==0:
-                send_command("20\n")
-                b = read_data()
 
 #GUI: Pause prgoram execution by resetting motor states and moving programm execution back by one line
 def pause_program():
@@ -221,9 +200,9 @@ l_current_com = Label(root, text = "", width = 4*bw+6, bg="white"); l_current_co
 b_set_params = Button(root, text = "Set Paramaters", command = set_params); b_set_params.place(x = 1*gs,y = 17*gs)
 f_params = Frame(root); f_params.place(x = 1*gs,y = 19*gs)
 l_zone = Label(f_params, text = "Zone:"); l_zone.pack(side = LEFT, padx=2)
-e_zone = Entry(f_params, bd = 2, width = 5); e_zone.insert(END, '100'); e_zone.pack(side = LEFT, padx=2)
-l_speed = Label(f_params, text = "Speed(%):"); l_speed.pack(side = LEFT, padx=2)
-e_speed = Entry(f_params, bd = 2, width = 5); e_speed.insert(END, '100'); e_speed.pack(side = LEFT, padx=2)
+e_zone = Entry(f_params, bd = 2, width = 5); e_zone.insert(END, '5'); e_zone.pack(side = LEFT, padx=2)
+l_speed = Label(f_params, text = "Speed:"); l_speed.pack(side = LEFT, padx=2)
+e_speed = Entry(f_params, bd = 2, width = 5); e_speed.insert(END, '255'); e_speed.pack(side = LEFT, padx=2)
 
 #GUI:Debug Block
 l_command = Label(root, text = "Custom Commands"); l_command.place(x = 1*gs,y = 22*gs)
@@ -235,4 +214,28 @@ l_errorcode = Label(root, text = "", width = 4*bw+6, bg="white"); l_errorcode.pl
 #Serial
 b_serial = Button(root, text="Start Serial", command = start_serial);b_serial.place(x = 1*gs,y = 29 * gs)
 
-root.mainloop()
+#root.mainloop()
+while True:
+    root.update()
+    if prog_running:
+        _prog_pos = prog_pos #make it so nothing can change this during execution
+        last_prog_pos = _prog_pos #save last program position
+        #read next command from file
+        fo = open(e_prg_file.get(), "r")
+        fo.seek(_prog_pos, 0) #go to current reading position
+        command = fo.readline()
+        prog_pos = fo.tell() # Check current position
+        fo.close() # Close opened file
+        #check if end of file was reached
+        if (command == ""):
+            prog_pos = 0
+        else:
+            #send read command from file to robot
+            msg = messagebox.showinfo("Send Command", "%r" % command)
+            send_command(command)
+            #wait for ready message (polling)
+            b = 0
+            while b==0:
+                send_command("20\n")
+                b = read_data()#
+                root.update()
