@@ -19,6 +19,8 @@ extern volatile int motor_cnt;
 extern int target_position;
 extern volatile int positionSpeed;
 extern volatile int positionDelta, positionLastDelta, positionDiff, positionInt;
+extern volatile int motorSpeed,speedDelta;
+extern  int maxMotorSpeed;
 
 #ifdef __cplusplus
 }

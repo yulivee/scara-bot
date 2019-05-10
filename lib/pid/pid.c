@@ -37,13 +37,22 @@ ISR(TIMER0_COMPA_vect) {
     positionInt += positionDelta;
     BOUNDS ( positionInt , MOVEIMAX );
 
+    //calculate values for speed P-controller
+    motorSpeed = positionDiff * F_CPU/1024/GOVERNOR_FREQ; //motor speed in clicks/s
+    speedDelta = maxMotorSpeed - motorSpeed;
+
 
     if ( target_position == motor_cnt ) {
         positionSpeed = 0;
     } else {
         //caluclate speed with PID control
       positionSpeed = positionDelta * MOVEP + positionInt * MOVEI + positionDiff * MOVED;
-      BOUNDS ( positionSpeed , MOVEMAX );
+      //speed limiter
+      if (motorSpeed>maxMotorSpeed || motorSpeed<-maxMotorSpeed) {
+        BOUNDS(positionSpeed,maxMotorSpeed)
+      } else{
+        BOUNDS ( positionSpeed , MOVEMAX );
+      }
     }
 
     //set Motors with speed value

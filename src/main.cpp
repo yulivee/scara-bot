@@ -20,12 +20,13 @@ const int slave_number = 7;
 volatile int motor_cnt = 0; //position the motor ist at
 volatile int positionSpeed = 0;
 volatile int positionDelta, positionLastDelta, positionDiff, positionInt = 0; //PID variables
+volatile int motorSpeed,speedDelta = 0;
+int maxMotorSpeed = 255;
 int target_position = 0;
 volatile int flag_0 = 0; //direction flag
 volatile int flag_1 = 0; //direction flag
 bool last_prime_state = 0;
 bool last_fire_state = 0;
-volatile int speed = 100; //speed in %
 volatile int zone = 5;  //fly-by distance to point in clicks
 
 enum Command {
@@ -222,11 +223,10 @@ void loop()
 
       case c_set_speed:  // set the axis max speed
       data = serial_read_int();
-      if ((0 <= data) && (data <= 100)) {
-        speed = data;
+      if ((0 <= data) && (data <= 255)) {
+        maxMotorSpeed = data;
       }else{
         error_code=e_bad_data;
-        speed = 0;
       }
       break;
 
