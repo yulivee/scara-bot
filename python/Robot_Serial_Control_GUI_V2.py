@@ -116,7 +116,6 @@ def stop_program():
 def teach():
     command = "6\n" # command 12 = home
     #send command
-    #msg = messagebox.showinfo("Send Command", "%r" % command)
     send_command(command)
     position = read_data()
     # Open file
@@ -124,11 +123,18 @@ def teach():
     fo.write( "12," +position + "\n") #write drive command to current position to file
     # Close opened file
     fo.close()
+    msg = messagebox.showinfo("Position Saved: ", "%s" % position)
+
 
 #GUI:send robot new parameter settings for zone
 def set_params():
     # command 15 = set speed, command 16 = set zone
     command = "16,"+e_zone.get()+"\n"
+    #send command
+    #msg = messagebox.showinfo("Send Command", "%r" % command)
+    send_command(command)
+    time.sleep (100.0 / 1000.0);
+    command = "15,"+e_speed.get()+"\n"
     #send command
     #msg = messagebox.showinfo("Send Command", "%r" % command)
     send_command(command)
@@ -231,11 +237,20 @@ while True:
             prog_pos = 0
         else:
             #send read command from file to robot
-            msg = messagebox.showinfo("Send Command", "%r" % command)
-            send_command(command)
-            #wait for ready message (polling)
-            b = 0
-            while b==0:
-                send_command("20\n")
-                b = read_data()#
-                root.update()
+            #msg = messagebox.showinfo("Send Command", "%r" % command)
+            #MsgBox = messagebox.askquestion ('Robot Programm','Run Command:'+command,icon = 'warning')
+            MsgBox ="yes"
+            if MsgBox == 'no':
+                stop_program()
+            else:
+                send_command(command)
+                #wait for ready message (polling)
+                b = False
+                while b == False:
+                    send_command("20\n")
+                    target_reached = read_data()
+                    if target_reached == "1":
+                        b = True
+                    else:
+                        time.sleep (100.0 / 1000.0);
+                        root.update()

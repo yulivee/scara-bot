@@ -39,8 +39,6 @@ ISR(TIMER0_COMPA_vect) {
 
     //calculate values for speed P-controller
     motorSpeed = positionDiff * F_CPU/1024/GOVERNOR_FREQ; //motor speed in clicks/s
-    speedDelta = maxMotorSpeed - motorSpeed;
-
 
     if ( target_position == motor_cnt ) {
         positionSpeed = 0;
