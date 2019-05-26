@@ -14,7 +14,7 @@ extern "C" {
 
 //controller specific PID values
 //TODO read these values from Ros parameter server
-#define MOVEP 15 //P Motorspannung pro Schritt - Genauigkeit. Erzeugt Zittern und schießt übers Ziel raus
+#define MOVEP 15 //P Motorspannung pro Schritt [V/Klicks] - - Genauigkeit. Erzeugt Zittern und schießt übers Ziel raus
 #define MOVEI 0.6 //I Erhöht Motorspannung bei kleinen Fehlern - lässt die letzten bisschen Fehler verschwinden
 #define MOVED 12 //D Rechtzeitig bremsen - dämpft Zittern und rauschießen
 
